@@ -1,25 +1,28 @@
 {
-	"type": "recipe",
-	"count": 1,
-	"crafter": "chef_crafting",
-	"inputs": [
-		{
-			"count": 2,
-			"item": "minecolonies:garlic"
-		},
-		{
-			"count": 1,
-			"item": "minecolonies:onion"
-		},
-		{
-			"count": 1,
-			"item": "minecraft:beef"
-		},
-		{
-			"count": 2,
-			"item": "minecraft:potato"
-		}
-	],
-	"intermediate": "minecraft:air",
-	"result": "minecolonies:steak_dinner"
+  "type": "recipe",
+  "crafter": "chef_crafting",
+  "inputs": [
+    {
+      "item": "minecolonies:garlic"
+    },
+    {
+      "item": "minecolonies:garlic"
+    },
+    {
+      "item": "minecolonies:onion"
+    },
+    {
+      "item": "minecraft:beef"
+    },
+    {
+      "item": "minecraft:potato"
+    },
+    {
+      "item": "minecraft:potato"
+    }
+  ],
+  "intermediate": "minecraft:air",
+  "min-building-level": 4,
+  "result": "minecolonies:steak_dinner",
+  "show-tooltip": true
 }

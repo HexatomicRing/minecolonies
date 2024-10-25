@@ -196,6 +196,8 @@ public final class ModBlocks
           blockCorn,
           blockNetherPepper,
           blockPeas,
+          blockMint,
+          blockButternutSquash
         };
     }
 }

@@ -133,11 +133,11 @@ public final class ModBlocksInitializer
         ModBlocks.blockTomato = new MinecoloniesCropBlock(TOMATO, ModBlocks.farmland, ModTags.temperateBiomes).registerBlock(registry);
         ModBlocks.blockRice = new MinecoloniesCropBlock(RICE, ModBlocks.floodedFarmland, ModTags.humidBiomes).registerBlock(registry);
 
-        ModBlocks.blockButternutSquash = new MinecoloniesCropBlock(BUTTERNUT_SQUASH, ModBlocks.farmland, ModTags.temperateBiomes).registerBlock(registry);
+        ModBlocks.blockButternutSquash = new MinecoloniesCropBlock(BUTTERNUT_SQUASH, ModBlocks.farmland, ModTags.coldBiomes).registerBlock(registry);
         ModBlocks.blockCorn = new MinecoloniesCropBlock(CORN, ModBlocks.farmland, ModTags.temperateBiomes).registerBlock(registry);
         ModBlocks.blockMint = new MinecoloniesCropBlock(MINT, ModBlocks.farmland, null).registerBlock(registry);
         ModBlocks.blockNetherPepper = new MinecoloniesCropBlock(NETHER_PEPPER, ModBlocks.farmland, ModTags.dryBiomes).registerBlock(registry);
-        ModBlocks.blockPeas = new MinecoloniesCropBlock(PEAS, ModBlocks.farmland, ModTags.temperateBiomes).registerBlock(registry);
+        ModBlocks.blockPeas = new MinecoloniesCropBlock(PEAS, ModBlocks.farmland, ModTags.humidBiomes).registerBlock(registry);
 
         ModBlocks.blockSimpleQuarry = new SimpleQuarry().registerBlock(registry);
         ModBlocks.blockMediumQuarry = new MediumQuarry().registerBlock(registry);

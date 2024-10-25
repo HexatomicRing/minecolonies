@@ -954,6 +954,9 @@
     "item": "minecolonies:butter"
   },
   {
+    "item": "minecolonies:butternut_squash"
+  },
+  {
     "item": "minecolonies:cabbage"
   },
   {
@@ -1002,6 +1005,9 @@
   },
   {
     "item": "minecolonies:cookie_dough"
+  },
+  {
+    "item": "minecolonies:corn"
   },
   {
     "item": "minecolonies:decorationcontroller"
@@ -1090,6 +1096,9 @@
     "item": "minecolonies:milky_bread"
   },
   {
+    "item": "minecolonies:mint"
+  },
+  {
     "item": "minecolonies:mistletoe"
   },
   {
@@ -1099,6 +1108,9 @@
     "item": "minecolonies:muffin_dough"
   },
   {
+    "item": "minecolonies:nether_pepper"
+  },
+  {
     "item": "minecolonies:onion"
   },
   {
@@ -1106,6 +1118,9 @@
   },
   {
     "item": "minecolonies:pasta_tomato"
+  },
+  {
+    "item": "minecolonies:peas"
   },
   {
     "item": "minecolonies:pepper_hummus"
