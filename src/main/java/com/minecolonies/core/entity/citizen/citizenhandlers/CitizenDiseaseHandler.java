@@ -95,7 +95,7 @@ public class CitizenDiseaseHandler implements ICitizenDiseaseHandler
         {
             final int citizenModifier = citizen.getCitizenJobHandler().getColonyJob() == null ? 1 : citizen.getCitizenJobHandler().getColonyJob().getDiseaseModifier();
             final int configModifier = MineColonies.getConfig().getServer().diseaseModifier.get();
-            if (citizen.getRandom().nextInt(configModifier * DISEASE_FACTOR) < citizenModifier || true)
+            if (citizen.getRandom().nextInt(configModifier * DISEASE_FACTOR) < citizenModifier)
             {
                 this.disease = DiseasesListener.getRandomDisease(citizen.getRandom());
             }
