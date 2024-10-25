@@ -2,7 +2,6 @@ package com.minecolonies.core.entity.citizen.citizenhandlers;
 
 import com.minecolonies.api.IMinecoloniesAPI;
 import com.minecolonies.api.colony.IColony;
-import com.minecolonies.api.colony.IColonyManager;
 import com.minecolonies.api.colony.buildings.IBuilding;
 import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
 import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenDiseaseHandler;
@@ -10,9 +9,12 @@ import com.minecolonies.core.MineColonies;
 import com.minecolonies.core.colony.buildings.workerbuildings.BuildingCook;
 import com.minecolonies.core.colony.jobs.AbstractJobGuard;
 import com.minecolonies.core.colony.jobs.JobHealer;
+import com.minecolonies.core.datalistener.DiseasesListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static com.minecolonies.api.research.util.ResearchConstants.MASKS;
 import static com.minecolonies.api.research.util.ResearchConstants.VACCINES;
@@ -53,7 +55,8 @@ public class CitizenDiseaseHandler implements ICitizenDiseaseHandler
     /**
      * The disease the citizen has, empty if none.
      */
-    private String disease = "";
+    @Nullable
+    private DiseasesListener.Disease disease;
 
     /**
      * Special immunity time after being cured.
@@ -92,10 +95,9 @@ public class CitizenDiseaseHandler implements ICitizenDiseaseHandler
         {
             final int citizenModifier = citizen.getCitizenJobHandler().getColonyJob() == null ? 1 : citizen.getCitizenJobHandler().getColonyJob().getDiseaseModifier();
             final int configModifier = MineColonies.getConfig().getServer().diseaseModifier.get();
-            if (!IColonyManager.getInstance().getCompatibilityManager().getDiseases().isEmpty() &&
-                  citizen.getRandom().nextInt(configModifier * DISEASE_FACTOR) < citizenModifier)
+            if (citizen.getRandom().nextInt(configModifier * DISEASE_FACTOR) < citizenModifier || true)
             {
-                this.disease = IColonyManager.getInstance().getCompatibilityManager().getRandomDisease();
+                this.disease = DiseasesListener.getRandomDisease(citizen.getRandom());
             }
         }
 
@@ -144,29 +146,32 @@ public class CitizenDiseaseHandler implements ICitizenDiseaseHandler
     @Override
     public boolean isSick()
     {
-        return !disease.isEmpty();
+        return disease != null;
     }
 
     @Override
     public void write(final CompoundTag compound)
     {
-        compound.putString(TAG_DISEASE, disease);
+        if (disease != null)
+        {
+            compound.putString(TAG_DISEASE, disease.id().toString());
+        }
         compound.putInt(TAG_IMMUNITY, immunityTicks);
     }
 
     @Override
     public void read(final CompoundTag compound)
     {
-        // cure diseases that have been removed from the configuration file.
-        if (IColonyManager.getInstance().getCompatibilityManager().getDisease(compound.getString(TAG_DISEASE)) != null)
+        if (compound.contains(TAG_DISEASE))
         {
-            this.disease = compound.getString(TAG_DISEASE);
+            this.disease = DiseasesListener.getDisease(new ResourceLocation(compound.getString(TAG_DISEASE)));
         }
         this.immunityTicks = compound.getInt(TAG_IMMUNITY);
     }
 
     @Override
-    public String getDisease()
+    @Nullable
+    public DiseasesListener.Disease getDisease()
     {
         return this.disease;
     }
@@ -174,7 +179,7 @@ public class CitizenDiseaseHandler implements ICitizenDiseaseHandler
     @Override
     public void cure()
     {
-        this.disease = "";
+        this.disease = null;
         sleepsAtHospital = false;
         if (citizen.getCitizenSleepHandler().isAsleep())
         {

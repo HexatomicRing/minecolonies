@@ -2678,5 +2678,9 @@
   "item.minecolonies.large_water_bottle": "Large Water Bottle",
   "item.minecolonies.large_milk_bottle": "Large Milk Bottle",
   "item.minecolonies.large_soy_milk_bottle": "Large Soy Milk Bottle",
-  "com.minecolonies.coremod.setting.minecolonies:milk_item": "Milk Item:"
+  "com.minecolonies.coremod.setting.minecolonies:milk_item": "Milk Item:",
+
+  "com.minecolonies.coremod.diseases.influenza": "Influenza",
+  "com.minecolonies.coremod.diseases.measles": "Measles",
+  "com.minecolonies.coremod.diseases.smallpox": "Smallpox"
 }

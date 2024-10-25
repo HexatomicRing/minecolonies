@@ -1,8 +1,10 @@
 package com.minecolonies.api.entity.citizen.citizenhandlers;
 
 import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
+import com.minecolonies.core.datalistener.DiseasesListener;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Citizen disease handler interface.
@@ -36,11 +38,12 @@ public interface ICitizenDiseaseHandler
     void read(final CompoundTag compound);
 
     /**
-     * get the disease identifier.
+     * Get the current disease, if any.
      *
-     * @return the disease identifier.
+     * @return the disease instance.
      */
-    String getDisease();
+    @Nullable
+    DiseasesListener.Disease getDisease();
 
     /**
      * Cure the citizen.

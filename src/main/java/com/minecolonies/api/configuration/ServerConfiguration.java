@@ -100,7 +100,6 @@ public class ServerConfiguration extends AbstractConfiguration
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> configListStudyItems;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> configListRecruitmentItems;
     public final ForgeConfigSpec.ConfigValue<List<? extends String>> luckyOres;
-    public final ForgeConfigSpec.ConfigValue<List<? extends String>> diseases;
     public final ForgeConfigSpec.BooleanValue                        auditCraftingTags;
     public final ForgeConfigSpec.BooleanValue                        debugInventories;
     public final ForgeConfigSpec.BooleanValue                        blueprintBuildMode;
@@ -231,12 +230,6 @@ public class ServerConfiguration extends AbstractConfiguration
                     "minecraft:lapis_ore!4",
                     "minecraft:diamond_ore!2",
                     "minecraft:emerald_ore!1"),
-          s -> s instanceof String);
-
-        diseases = defineList(builder, "diseases",
-          Arrays.asList("Influenza,100,minecraft:carrot,minecraft:potato",
-            "Measles,10,minecraft:dandelion,minecraft:kelp,minecraft:poppy",
-            "Smallpox,1,minecraft:honey_bottle,minecraft:golden_apple"),
           s -> s instanceof String);
 
         auditCraftingTags = defineBoolean(builder, "auditcraftingtags", false);

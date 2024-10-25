@@ -2,21 +2,22 @@ package com.minecolonies.core.entity.ai.minimal;
 
 import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.colony.IColony;
-import com.minecolonies.api.colony.IColonyManager;
 import com.minecolonies.api.colony.buildings.IBuilding;
 import com.minecolonies.api.colony.interactionhandling.ChatPriority;
+import com.minecolonies.api.crafting.ItemStorage;
 import com.minecolonies.api.entity.ai.IStateAI;
 import com.minecolonies.api.entity.ai.statemachine.states.CitizenAIState;
 import com.minecolonies.api.entity.ai.statemachine.states.IState;
 import com.minecolonies.api.entity.ai.statemachine.tickratestatemachine.TickingTransition;
 import com.minecolonies.api.entity.citizen.VisibleCitizenStatus;
 import com.minecolonies.api.util.BlockPosUtil;
-import com.minecolonies.api.util.Disease;
 import com.minecolonies.api.util.InventoryUtils;
 import com.minecolonies.api.util.SoundUtils;
 import com.minecolonies.core.Network;
 import com.minecolonies.core.colony.buildings.workerbuildings.BuildingHospital;
 import com.minecolonies.core.colony.interactionhandling.StandardInteraction;
+import com.minecolonies.core.datalistener.DiseasesListener;
+import com.minecolonies.core.datalistener.DiseasesListener.Disease;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
 import com.minecolonies.core.network.messages.client.CircleParticleEffectMessage;
 import net.minecraft.core.BlockPos;
@@ -77,42 +78,23 @@ public class EntityAISickTask implements IStateAI
     /**
      * Citizen data.
      */
-    private final ICitizenData citizenData;
-
-    /**
-     * The waiting ticks.
-     */
-    private int waitingTicks = 0;
-
-    /**
-     * The bed the citizen is sleeping in.
-     */
-    private BlockPos usedBed;
-
-    /**
-     * The different types of AIStates related to eating.
-     */
-    public enum DiseaseState implements IState
-    {
-        CHECK_FOR_CURE,
-        GO_TO_HUT,
-        SEARCH_HOSPITAL,
-        GO_TO_HOSPITAL,
-        WAIT_FOR_CURE,
-        FIND_EMPTY_BED,
-        APPLY_CURE,
-        WANDER
-    }
-
+    private final ICitizenData  citizenData;
     /**
      * The citizen assigned to this task.
      */
     private final EntityCitizen citizen;
-
+    /**
+     * The waiting ticks.
+     */
+    private       int           waitingTicks = 0;
+    /**
+     * The bed the citizen is sleeping in.
+     */
+    private       BlockPos      usedBed;
     /**
      * Restaurant to which the citizen should path.
      */
-    private BlockPos placeToPath;
+    private       BlockPos      placeToPath;
 
     /**
      * Instantiates this task.
@@ -245,10 +227,15 @@ public class EntityAISickTask implements IStateAI
             return CHECK_FOR_CURE;
         }
 
-        final List<ItemStack> list = IColonyManager.getInstance().getCompatibilityManager().getDisease(citizen.getCitizenDiseaseHandler().getDisease()).getCure();
+        if (citizen.getCitizenDiseaseHandler().getDisease() == null)
+        {
+            return CitizenAIState.IDLE;
+        }
+
+        final List<ItemStorage> list = citizen.getCitizenDiseaseHandler().getDisease().cureItems();
         if (!list.isEmpty())
         {
-            citizen.setItemInHand(InteractionHand.MAIN_HAND, list.get(citizen.getRandom().nextInt(list.size())));
+            citizen.setItemInHand(InteractionHand.MAIN_HAND, list.get(citizen.getRandom().nextInt(list.size())).getItemStack());
         }
 
         citizen.swing(InteractionHand.MAIN_HAND);
@@ -275,12 +262,12 @@ public class EntityAISickTask implements IStateAI
      */
     private void cure()
     {
-        final Disease disease = IColonyManager.getInstance().getCompatibilityManager().getDisease(citizen.getCitizenDiseaseHandler().getDisease());
+        final Disease disease = citizen.getCitizenDiseaseHandler().getDisease();
         if (disease != null)
         {
-            for (final ItemStack cure : disease.getCure())
+            for (final ItemStorage cure : disease.cureItems())
             {
-                final int slot = InventoryUtils.findFirstSlotInProviderNotEmptyWith(citizen, stack -> ItemStack.isSameItem(cure, stack));
+                final int slot = InventoryUtils.findFirstSlotInProviderNotEmptyWith(citizen, DiseasesListener.hasCureItem(cure));
                 if (slot != -1)
                 {
                     citizenData.getInventory().extractItem(slot, 1, false);
@@ -410,26 +397,25 @@ public class EntityAISickTask implements IStateAI
      */
     private IState searchHospital()
     {
+        final Disease disease = citizen.getCitizenDiseaseHandler().getDisease();
+        if (disease == null)
+        {
+            return CitizenAIState.IDLE;
+        }
+
         final IColony colony = citizenData.getColony();
         placeToPath = colony.getBuildingManager().getBestBuilding(citizen, BuildingHospital.class);
 
         if (placeToPath == null)
         {
-            final String id = citizen.getCitizenDiseaseHandler().getDisease();
-            if (id.isEmpty())
-            {
-                return CitizenAIState.IDLE;
-            }
-            final Disease disease = IColonyManager.getInstance().getCompatibilityManager().getDisease(id);
-            citizenData.triggerInteraction(new StandardInteraction(Component.translatable(NO_HOSPITAL, disease.getName(), disease.getCureString()),
+            citizenData.triggerInteraction(new StandardInteraction(Component.translatable(NO_HOSPITAL, disease.name(), disease.getCureString()),
               Component.translatable(NO_HOSPITAL),
               ChatPriority.BLOCKING));
             return WANDER;
         }
-        else if (!citizen.getCitizenDiseaseHandler().getDisease().isEmpty())
+        else
         {
-            final Disease disease = IColonyManager.getInstance().getCompatibilityManager().getDisease(citizen.getCitizenDiseaseHandler().getDisease());
-            citizenData.triggerInteraction(new StandardInteraction(Component.translatable(WAITING_FOR_CURE, disease.getName(), disease.getCureString()),
+            citizenData.triggerInteraction(new StandardInteraction(Component.translatable(WAITING_FOR_CURE, disease.name(), disease.getCureString()),
               Component.translatable(WAITING_FOR_CURE),
               ChatPriority.BLOCKING));
         }
@@ -444,8 +430,8 @@ public class EntityAISickTask implements IStateAI
      */
     private IState checkForCure()
     {
-        final String id = citizen.getCitizenDiseaseHandler().getDisease();
-        if (id.isEmpty())
+        final Disease disease = citizen.getCitizenDiseaseHandler().getDisease();
+        if (disease == null)
         {
             if (citizen.getHealth() > SEEK_DOCTOR_HEALTH)
             {
@@ -454,10 +440,10 @@ public class EntityAISickTask implements IStateAI
             }
             return GO_TO_HUT;
         }
-        final Disease disease = IColonyManager.getInstance().getCompatibilityManager().getDisease(id);
-        for (final ItemStack cure : disease.getCure())
+
+        for (final ItemStorage cure : disease.cureItems())
         {
-            final int slot = InventoryUtils.findFirstSlotInProviderNotEmptyWith(citizen, stack -> ItemStack.isSameItem(cure, stack));
+            final int slot = InventoryUtils.findFirstSlotInProviderNotEmptyWith(citizen, DiseasesListener.hasCureItem(cure));
             if (slot == -1)
             {
                 if (citizen.getCitizenDiseaseHandler().isSick())
@@ -489,5 +475,20 @@ public class EntityAISickTask implements IStateAI
     public void start()
     {
         citizen.getCitizenData().setVisibleStatus(VisibleCitizenStatus.SICK);
+    }
+
+    /**
+     * The different types of AIStates related to eating.
+     */
+    public enum DiseaseState implements IState
+    {
+        CHECK_FOR_CURE,
+        GO_TO_HUT,
+        SEARCH_HOSPITAL,
+        GO_TO_HOSPITAL,
+        WAIT_FOR_CURE,
+        FIND_EMPTY_BED,
+        APPLY_CURE,
+        WANDER
     }
 }
