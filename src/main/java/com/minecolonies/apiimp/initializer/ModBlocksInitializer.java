@@ -234,6 +234,11 @@ public final class ModBlocksInitializer
         ModBlocks.blockSoyBean.registerBlockItem(registry, new Item.Properties());
         ModBlocks.blockTomato.registerBlockItem(registry, new Item.Properties());
         ModBlocks.blockRice.registerBlockItem(registry, new Item.Properties());
+        ModBlocks.blockButternutSquash.registerBlockItem(registry, new Item.Properties());
+        ModBlocks.blockCorn.registerBlockItem(registry, new Item.Properties());
+        ModBlocks.blockMint.registerBlockItem(registry, new Item.Properties());
+        ModBlocks.blockNetherPepper.registerBlockItem(registry, new Item.Properties());
+        ModBlocks.blockPeas.registerBlockItem(registry, new Item.Properties());
 
         ModBlocks.blockSimpleQuarry.registerBlockItem(registry, new Item.Properties());
         ModBlocks.blockMediumQuarry.registerBlockItem(registry, new Item.Properties());

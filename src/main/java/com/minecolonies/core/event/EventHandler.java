@@ -256,7 +256,7 @@ public class EventHandler
                                               .otherwise(LootItem.lootTableItem(ModBlocks.blockBellPepper)
                                                            .when(LootItemRandomChanceCondition.randomChance(0.001f)))).build());
 
-            event.getTable().addPool(LootPool.lootPool().when(EntityInBiomeTag.of(ModTags.temperateBiomes))
+            event.getTable().addPool(LootPool.lootPool().when(EntityInBiomeTag.of(ModTags.coldBiomes))
                     .add(AlternativesEntry.alternatives()
                             .otherwise(LootItem.lootTableItem(ModBlocks.blockButternutSquash)
                                     .when(MatchTool.toolMatches(ItemPredicate.Builder.item().of(ItemTags.HOES)))
@@ -288,15 +288,13 @@ public class EventHandler
                             .otherwise(LootItem.lootTableItem(ModBlocks.blockNetherPepper)
                                     .when(LootItemRandomChanceCondition.randomChance(0.001f)))).build());
 
-            event.getTable().addPool(LootPool.lootPool().when(EntityInBiomeTag.of(ModTags.temperateBiomes))
+            event.getTable().addPool(LootPool.lootPool().when(EntityInBiomeTag.of(ModTags.humidBiomes))
                     .add(AlternativesEntry.alternatives()
                             .otherwise(LootItem.lootTableItem(ModBlocks.blockPeas)
                                     .when(MatchTool.toolMatches(ItemPredicate.Builder.item().of(ItemTags.HOES)))
                                     .when(LootItemRandomChanceCondition.randomChance(0.10f)))
                             .otherwise(LootItem.lootTableItem(ModBlocks.blockPeas)
                                     .when(LootItemRandomChanceCondition.randomChance(0.001f)))).build());
-
-
 
         }
         else if (event.getName().equals(BuiltInLootTables.SIMPLE_DUNGEON))

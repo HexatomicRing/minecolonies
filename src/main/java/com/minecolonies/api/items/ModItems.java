@@ -107,17 +107,17 @@ public final class ModItems
     public static Item sushi_roll;
     public static Item tofu;
 
-    public static Item bonebroth;
     public static Item cornmeal;
     public static Item creamcheese;
     public static Item soysauce;
     public static Item cheese_ravioli;
     public static Item chicken_broth;
     public static Item corn_chowder;
-    public static Item grilled_chicken;
+    public static Item spicy_grilled_chicken;
     public static Item kebab;
     public static Item meat_ravioli;
     public static Item mint_jelly;
+    public static Item mint_tea;
     public static Item pea_soup;
     public static Item polenta;
     public static Item potato_soup;
