@@ -134,6 +134,57 @@ public final class ModItemsInitializer
         ModItems.scanAnalyzer = new ItemScanAnalyzer("scan_analyzer", new Item.Properties());
 
         // Tier 1 Food Items
+//// foods
+        ModItems.cheddar_cheese = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.feta_cheese = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.cooked_rice = new ItemBowlFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.tofu = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.flatbread = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.BAKER_ID.getPath(), 1);
+        ModItems.cheese_ravioli = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.chicken_broth = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.corn_chowder = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.grilled_chicken = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.meat_ravioli = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.mint_jelly = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.kebab = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.pea_soup = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.polenta = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.potato_soup = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.squash_soup = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.tortillas = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.veggie_ravioli = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.yogurt = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+
+        // Tier 2 Food Items
+        ModItems.manchet_bread = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(1.0F).build()), ModJobs.BAKER_ID.getPath(), 2);
+        ModItems.lembas_scone = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(1.0F).build()), ModJobs.BAKER_ID.getPath(), 2);
+        ModItems.muffin = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(1.0F).build()), ModJobs.BAKER_ID.getPath(), 2);
+        ModItems.pottage = new ItemBowlFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(1.0F).build()), ModJobs.CHEF_ID.getPath(), 2);
+        ModItems.pasta_plain = new ItemBowlFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(1.0F).build()), ModJobs.CHEF_ID.getPath(), 2);
+        ModItems.apple_pie = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build()), ModJobs.BAKER_ID.getPath(), 2);
+        ModItems.cheese_pizza = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build()), ModJobs.BAKER_ID.getPath(), 2);
+        ModItems.plain_cheesecake = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build()), ModJobs.BAKER_ID.getPath(), 2);
+        ModItems.baked_salmon = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 2);
+        ModItems.eggdrop_soup = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 2);
+        ModItems.fish_n_chips = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 2);
+        ModItems.kimchi = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 2);
+        ModItems.pierogi = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 2);
+        ModItems.veggie_quiche = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 2);
+        ModItems.veggie_soup = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 2);
+        ModItems.yogurt_with_berries = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 2);
+
+        // Tier 3 Food items
+        ModItems.hand_pie = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationMod(1.2F).build()), ModJobs.CHEF_ID.getPath(), 3);
+        ModItems.mintchoco_cheesecake = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationMod(0.6F).build()), ModJobs.BAKER_ID.getPath(), 3);
+        ModItems.mushroom_pizza = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationMod(0.6F).build()), ModJobs.BAKER_ID.getPath(), 3);
+        ModItems.borscht = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 3);
+        ModItems.fish_dinner = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 3);
+        ModItems.mutton_dinner = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 3);
+        ModItems.ramen = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 3);
+        ModItems.schnitzel = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 3);
+        ModItems.steak_dinner = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 3);
+        ModItems.tacos = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationMod(0.6F).build()), ModJobs.CHEF_ID.getPath(), 3);
+////
         ModItems.cheddar_cheese = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), 1);
         ModItems.feta_cheese = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), 1);
         ModItems.cooked_rice = new ItemBowlFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationMod(0.6F).build()), 1);
@@ -149,6 +200,7 @@ public final class ModItemsInitializer
 
         // Tier 3 Food items
         ModItems.hand_pie = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationMod(1.2F).build()), 3);
+//// cook-rework
 
         // Cold Biomes
         // Tier 2
@@ -282,6 +334,45 @@ public final class ModItemsInitializer
         registry.register(new ResourceLocation(Constants.MOD_ID, "stuffed_pita"), ModItems.stuffed_pita);
         registry.register(new ResourceLocation(Constants.MOD_ID, "sushi_roll"), ModItems.sushi_roll);
         registry.register(new ResourceLocation(Constants.MOD_ID, "tofu"), ModItems.tofu);
+
+        registry.register(new ResourceLocation(Constants.MOD_ID, "cheese_ravioli"), ModItems.cheese_ravioli);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "chicken_broth"), ModItems.chicken_broth);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "corn_chowder"), ModItems.corn_chowder);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "grilled_chicken"), ModItems.grilled_chicken);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "kebab"), ModItems.kebab);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "meat_ravioli"), ModItems.meat_ravioli);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "mint_jelly"), ModItems.mint_jelly);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "pea_soup"), ModItems.pea_soup);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "polenta"), ModItems.polenta);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "potato_soup"), ModItems.potato_soup);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "squash_soup"), ModItems.squash_soup);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "veggie_ravioli"), ModItems.veggie_ravioli);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "yogurt"), ModItems.yogurt);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "baked_salmon"), ModItems.baked_salmon);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "eggdrop_soup"), ModItems.eggdrop_soup);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "fish_n_chips"), ModItems.fish_n_chips);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "kimchi"), ModItems.kimchi);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "pierogi"), ModItems.pierogi);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "veggie_quiche"), ModItems.veggie_quiche);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "veggie_soup"), ModItems.veggie_soup);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "yogurt_with_berries"), ModItems.yogurt_with_berries);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "borscht"), ModItems.borscht);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "fish_dinner"), ModItems.fish_dinner);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "mutton_dinner"), ModItems.mutton_dinner);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "ramen"), ModItems.ramen);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "schnitzel"), ModItems.schnitzel);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "steak_dinner"), ModItems.steak_dinner);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "tacos"), ModItems.tacos);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "bonebroth"), ModItems.bonebroth);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "cornmeal"), ModItems.cornmeal);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "creamcheese"), ModItems.creamcheese);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "soysauce"), ModItems.soysauce);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "tortillas"), ModItems.tortillas);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "apple_pie"), ModItems.apple_pie);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "cheese_pizza"), ModItems.cheese_pizza);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "mushroom_pizza"), ModItems.mushroom_pizza);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "plain_cheesecake"), ModItems.plain_cheesecake);
+        registry.register(new ResourceLocation(Constants.MOD_ID, "mintchoco_cheesecake"), ModItems.mintchoco_cheesecake);
 
         registry.register(new ResourceLocation(Constants.MOD_ID, "large_empty_bottle"), ModItems.large_empty_bottle);
         registry.register(new ResourceLocation(Constants.MOD_ID, "large_water_bottle"), ModItems.large_water_bottle);
