@@ -219,5 +219,20 @@ public class DefaultChefCraftingProvider extends CustomRecipeProvider
           .showTooltip(true)
           .minBuildingLevel(4)
           .build(consumer);
+
+        CustomRecipeBuilder.create(CHEF, MODULE_CRAFTING, "spicy_eggplant")
+          .inputs(List.of(
+            new ItemStorage(new ItemStack(ModBlocks.blockNetherPepper)),
+            new ItemStorage(new ItemStack(ModBlocks.blockNetherPepper)),
+            new ItemStorage(new ItemStack(ModBlocks.blockEggplant)),
+            new ItemStorage(new ItemStack(ModBlocks.blockEggplant)),
+            new ItemStorage(new ItemStack(ModBlocks.blockGarlic)),
+            new ItemStorage(new ItemStack(ModBlocks.blockOnion)),
+            new ItemStorage(new ItemStack(Items.BOWL))
+          ))
+          .result(new ItemStack(ModItems.spicy_eggplant, 1))
+          .showTooltip(true)
+          .minBuildingLevel(4)
+          .build(consumer);
     }
 }

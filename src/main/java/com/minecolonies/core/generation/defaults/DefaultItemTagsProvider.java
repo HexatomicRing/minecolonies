@@ -270,7 +270,8 @@ public class DefaultItemTagsProvider extends ItemTagsProvider
           .add(ModItems.tortillas)
           .add(ModItems.apple_pie)
           .add(ModItems.cheese_pizza)
-          .add(ModItems.plain_cheesecake);
+          .add(ModItems.plain_cheesecake)
+          .add(ModItems.spicy_eggplant);
 
         tag(ModTags.crafterProductExclusions.get(TagConstants.CRAFTING_COOK))
           .add(Items.BREAD, Items.CAKE, Items.COOKIE, Items.PUMPKIN_PIE, ModItems.cheese_pizza, ModItems.plain_cheesecake, ModItems.apple_pie, ModItems.cornmeal);
