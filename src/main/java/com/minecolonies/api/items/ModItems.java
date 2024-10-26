@@ -1,6 +1,7 @@
 package com.minecolonies.api.items;
 
 import net.minecraft.world.item.Item;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Class handling the registering of the mod items.
@@ -145,12 +146,12 @@ public final class ModItems
     public static Item mushroom_pizza;
     public static Item plain_cheesecake;
     public static Item mintchoco_cheesecake;
+    public static Item spicy_eggplant;
 
     public static Item large_water_bottle;
     public static Item large_milk_bottle;
     public static Item large_soy_milk_bottle;
     public static Item large_empty_bottle;
-
 
     /**
      * Private constructor to hide the implicit public one.
@@ -160,5 +161,84 @@ public final class ModItems
         /*
          * Intentionally left empty.
          */
+    }
+
+    @NotNull
+    public static Item[] getAllFoods()
+    {
+        return new Item[] {
+          muffin_dough,
+          manchet_dough,
+          raw_noodle,
+          butter,
+          cornmeal,
+          creamcheese,
+          soysauce,
+
+          // Tier 1 Food
+          cheddar_cheese,
+          feta_cheese,
+          cooked_rice,
+          tofu,
+          flatbread,
+          cheese_ravioli,
+          chicken_broth,
+          meat_ravioli,
+          mint_jelly,
+          mint_tea,
+          polenta,
+          potato_soup,
+          veggie_ravioli,
+          yogurt,
+          squash_soup,
+          pea_soup,
+          corn_chowder,
+          tortillas,
+          spicy_grilled_chicken,
+
+          // Tier 2 Food
+          manchet_bread,
+          lembas_scone,
+          muffin,
+          pottage,
+          pasta_plain,
+          apple_pie,
+          plain_cheesecake,
+          baked_salmon,
+          eggdrop_soup,
+          fish_n_chips,
+          pierogi,
+          veggie_soup,
+          yogurt_with_berries,
+          cabochis,
+          veggie_quiche,
+          rice_ball,
+          mutton_dinner,
+          pasta_tomato,
+          cheese_pizza,
+          pepper_hummus,
+          kebab,
+          congee,
+          kimchi,
+
+          // Tier 3 Food
+          hand_pie,
+          mintchoco_cheesecake,
+          borscht,
+          schnitzel,
+          steak_dinner,
+          lamb_stew,
+          fish_dinner,
+          sushi_roll,
+          ramen,
+          eggplant_dolma,
+          stuffed_pita,
+          mushroom_pizza,
+          pita_hummus,
+          spicy_eggplant,
+          stew_trencher,
+          stuffed_pepper,
+          tacos
+        };
     }
 }

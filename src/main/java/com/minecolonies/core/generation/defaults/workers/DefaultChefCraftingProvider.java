@@ -166,8 +166,7 @@ public class DefaultChefCraftingProvider extends CustomRecipeProvider
           .showTooltip(true)
           .minBuildingLevel(4)
           .build(consumer);
-
-
+        
         CustomRecipeBuilder.create(CHEF, MODULE_CRAFTING, "ramen")
           .inputs(List.of(
             new ItemStorage(new ItemStack(ModBlocks.blockGarlic)),
