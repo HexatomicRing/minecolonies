@@ -89,7 +89,7 @@ public class DiseasesListener extends SimpleJsonResourceReloadListener
      */
     public DiseasesListener()
     {
-        super(GSON, "diseases");
+        super(GSON, "colony/diseases");
     }
 
     /**
