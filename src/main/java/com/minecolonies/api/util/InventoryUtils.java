@@ -1825,12 +1825,14 @@ public class InventoryUtils
      *
      * @param building      The {@link IBuilding} that works as Source.
      * @param storage       the ItemStorage.
+     * @param qty           the qty.
      * @param targetHandler The {@link IItemHandler} that works as Target.
      * @return true when the swap was successful, false when not.
      */
     public static boolean transferItemStackIntoNextBestSlotInItemHandler(
       @NotNull final IBuilding building,
       final ItemStorage storage,
+      final int qty,
       @NotNull final IItemHandler targetHandler)
     {
         final Level level = building.getColony().getWorld();
@@ -1864,6 +1866,21 @@ public class InventoryUtils
         return false;
     }
 
+    /**
+     * Method to transfer an ItemStacks from the given source {@link IBuilding} to the given target {@link IItemHandler}.
+     *
+     * @param building      The {@link IBuilding} that works as Source.
+     * @param storage       the ItemStorage.
+     * @param targetHandler The {@link IItemHandler} that works as Target.
+     * @return true when the swap was successful, false when not.
+     */
+    public static boolean transferItemStackIntoNextBestSlotInItemHandler(
+      @NotNull final IBuilding building,
+      final ItemStorage storage,
+      @NotNull final IItemHandler targetHandler)
+    {
+        return transferItemStackIntoNextBestSlotInItemHandler(building, storage, Integer.MAX_VALUE, targetHandler);
+    }
 
     /**
      * Method to put a given Itemstack in a given target {@link IItemHandler}. Trying to merge existing itemStacks if possible.

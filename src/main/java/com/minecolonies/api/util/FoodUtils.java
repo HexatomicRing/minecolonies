@@ -110,7 +110,7 @@ public class FoodUtils
                 final boolean isMinecolfood = invStack.getItem() instanceof IMinecoloniesFoodItem;
                 final int localScore = citizenData.checkLastEaten(invStack.getItem()) * (isMinecolfood ? 2 : 1);
                 // If we're not at the restaurant and we've eaten this very recently, we should check out food at restaurant instead.
-                if (menu != null && citizenData.getLastEaten() == invStack.getItem())
+                if (menu == null && citizenData.getLastEaten() == invStack.getItem())
                 {
                     continue;
                 }
@@ -133,9 +133,9 @@ public class FoodUtils
         }
 
         // If we're not at the restaurant and are the brink of complaining about food, go to the restaurant instead of eating the food you got in the inventory.
-        if (menu != null &&
-              (bestScore >= 0 && foodStats.diversity() <= diversityRequirement)
-              || (!(bestItem instanceof IMinecoloniesFoodItem) && foodStats.quality() <= qualityRequirement))
+        if (menu == null &&
+              ((bestScore >= 0 && foodStats.diversity() <= diversityRequirement)
+              || (!(bestItem instanceof IMinecoloniesFoodItem) && foodStats.quality() <= qualityRequirement)))
         {
             return -1;
         }

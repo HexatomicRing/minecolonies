@@ -289,8 +289,8 @@ public class CitizenHappinessHandler implements ICitizenHappinessHandler
 
         ICitizenData.CitizenFoodStats happinessStats = citizenData.getFoodHappinessStats();
 
-        final double diversityFactor = Math.max(5.0, (double) happinessStats.diversity() / homeBuildingLevel);
-        final double qualityFactor = Math.max(5.0, (double) happinessStats.quality() / (Math.max(1.0, homeBuildingLevel - 2.0)));
+        final double diversityFactor = Math.min(5.0, (double) happinessStats.diversity() / homeBuildingLevel);
+        final double qualityFactor = Math.min(5.0, (double) happinessStats.quality() / (Math.max(1.0, homeBuildingLevel - 2.0)));
 
         return (diversityFactor + qualityFactor) / 2.0;
     }

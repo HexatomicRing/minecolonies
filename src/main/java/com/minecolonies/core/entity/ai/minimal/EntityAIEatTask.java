@@ -30,6 +30,7 @@ import java.util.Set;
 
 import static com.minecolonies.api.util.ItemStackUtils.CAN_EAT;
 import static com.minecolonies.api.util.ItemStackUtils.ISCOOKABLE;
+import static com.minecolonies.api.util.constant.CitizenConstants.FULL_SATURATION;
 import static com.minecolonies.api.util.constant.Constants.SECONDS_A_MINUTE;
 import static com.minecolonies.api.util.constant.Constants.TICKS_SECOND;
 import static com.minecolonies.api.util.constant.GuardConstants.BASIC_VOLUME;
@@ -228,7 +229,7 @@ public class EntityAIEatTask implements IStateAI
         ItemStackUtils.consumeFood(foodStack, citizen, null);
         citizen.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 
-        if (citizenData.getSaturation() < CitizenConstants.FULL_SATURATION && !citizenData.getInventory().getStackInSlot(foodSlot).isEmpty())
+        if (citizenData.getSaturation() < FULL_SATURATION && !citizenData.getInventory().getStackInSlot(foodSlot).isEmpty())
         {
             waitingTicks = 0;
             return EAT;
@@ -266,12 +267,15 @@ public class EntityAIEatTask implements IStateAI
             {
                 return GET_FOOD_YOURSELF;
             }
-            InventoryUtils.transferFoodUpToSaturation(cookBuilding,
-              citizen.getInventoryCitizen(),
-              GET_YOURSELF_SATURATION,
-              stack -> CAN_EAT.test(stack) && canEat(citizen.getCitizenData(), stack)
-                         && !(cookBuilding.getModule(RESTAURANT_MENU)
-                .getMenu().contains(new ItemStorage(stack))));
+
+            final ItemStorage storageToGet = FoodUtils.checkForFoodInBuilding(citizen.getCitizenData(), cookBuilding.getModule(RESTAURANT_MENU).getMenu(), cookBuilding);
+            if (storageToGet != null)
+            {
+                int homeBuildingLevel = citizen.getCitizenData().getHomeBuilding() == null ? 0 : citizen.getCitizenData().getHomeBuilding().getBuildingLevel();
+                int qty = (int) (Math.max(1.0, (FULL_SATURATION - citizen.getCitizenData().getSaturation()) / FoodUtils.getFoodValue(storageToGet.getItemStack(), citizen)) * homeBuildingLevel/2.0);
+                InventoryUtils.transferItemStackIntoNextBestSlotInItemHandler(cookBuilding, storageToGet, qty, citizen.getInventoryCitizen());
+                return EAT;
+            }
         }
 
         return WAIT_FOR_FOOD;
