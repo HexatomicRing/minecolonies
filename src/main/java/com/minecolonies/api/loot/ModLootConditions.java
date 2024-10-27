@@ -9,8 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraftforge.registries.DeferredRegister;
@@ -36,17 +36,12 @@ public final class ModLootConditions
     public static final RegistryObject<LootItemConditionType> buildingLevel;
 
     // also some convenience definitions for existing conditions; some stolen from BlockLootSubProvider
-    public static final LootItemCondition.Builder HAS_SILK_TOUCH = MatchTool.toolMatches(ItemPredicate.Builder.item().hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))));
-    public static final LootItemCondition.Builder HAS_SHEARS = MatchTool.toolMatches(ItemPredicate.Builder.item().of(Items.SHEARS));
-    public static final LootItemCondition.Builder HAS_SHEARS_OR_SILK_TOUCH = HAS_SHEARS.or(HAS_SILK_TOUCH);
+    public static final LootItemCondition.Builder HAS_SILK_TOUCH              =
+      MatchTool.toolMatches(ItemPredicate.Builder.item().hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))));
+    public static final LootItemCondition.Builder HAS_SHEARS                  = MatchTool.toolMatches(ItemPredicate.Builder.item().of(Items.SHEARS));
+    public static final LootItemCondition.Builder HAS_SHEARS_OR_SILK_TOUCH    = HAS_SHEARS.or(HAS_SILK_TOUCH);
     public static final LootItemCondition.Builder HAS_NO_SHEARS_OR_SILK_TOUCH = HAS_SHEARS_OR_SILK_TOUCH.invert();
-    public static final LootItemCondition.Builder HAS_HOE = MatchTool.toolMatches(ItemPredicate.Builder.item().of(ItemTags.HOES));
-
-    public static void init()
-    {
-        // just for classloading
-    }
-
+    public static final LootItemCondition.Builder HAS_HOE                     = MatchTool.toolMatches(ItemPredicate.Builder.item().of(ItemTags.HOES));
     static
     {
         entityInBiomeTag = DEFERRED_REGISTER.register(ModLootConditions.ENTITY_IN_BIOME_TAG_ID.getPath(),
@@ -58,8 +53,14 @@ public final class ModLootConditions
         buildingLevel = DEFERRED_REGISTER.register(ModLootConditions.BUILDING_LEVEL_ID.getPath(),
           () -> new LootItemConditionType(new BuildingLevel.Serializer()));
     }
+
     private ModLootConditions()
     {
         throw new IllegalStateException("Tried to initialize: ModLootConditions but this is a Utility class.");
+    }
+
+    public static void init()
+    {
+        // just for classloading
     }
 }
