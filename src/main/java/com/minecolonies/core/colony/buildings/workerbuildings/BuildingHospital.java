@@ -1,14 +1,19 @@
 package com.minecolonies.core.colony.buildings.workerbuildings;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.colony.IColony;
 import com.minecolonies.api.colony.IColonyManager;
+import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
 import com.minecolonies.api.util.BlockPosUtil;
 import com.minecolonies.api.util.Disease;
 import com.minecolonies.api.util.constant.NbtTagConstants;
+import com.minecolonies.core.colony.CitizenData;
 import com.minecolonies.core.colony.buildings.AbstractBuilding;
 import com.minecolonies.core.entity.ai.workers.util.Patient;
+import com.minecolonies.core.entity.citizen.EntityCitizen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -49,7 +54,7 @@ public class BuildingHospital extends AbstractBuilding
      * Map from beds to patients, 0 is empty.
      */
     @NotNull
-    private final Map<BlockPos, Integer> bedMap = new HashMap<>();
+    private final BiMap<BlockPos, Integer> bedMap = HashBiMap.create();
 
     /**
      * Map of patients of this hospital.
@@ -321,6 +326,16 @@ public class BuildingHospital extends AbstractBuilding
                 bedMap.remove(entry.getKey());
             }
         }
+    }
+
+    /**
+     * Check if the citizen is actually in bed.
+     * @param citizen the entity to check.
+     * @return true if close to bed.
+     */
+    public boolean isInBed(final AbstractEntityCitizen citizen)
+    {
+        return bedMap.inverse().getOrDefault(citizen.getCitizenData().getId(), BlockPos.ZERO).distManhattan(citizen.blockPosition()) < 10;
     }
 
     @Override

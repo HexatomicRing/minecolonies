@@ -219,6 +219,11 @@ public final class CitizenConstants
     public static final String TAG_IMMUNITY = "immunity";
 
     /**
+     * Hospital pos tag
+     */
+    public static final String TAG_HOSPITAL = "hospital";
+
+    /**
      * Noon day time.
      */
     public static final int NOON = 6000;

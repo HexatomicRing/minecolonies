@@ -1,6 +1,8 @@
 package com.minecolonies.api.entity.citizen.citizenhandlers;
 
 import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
+import com.minecolonies.core.colony.buildings.workerbuildings.BuildingHospital;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,5 +69,5 @@ public interface ICitizenDiseaseHandler
     /**
      * Sets a flag that the citizen is now at the hospital.
      */
-    void setSleepsAtHospital(final boolean isAtHospital);
+    void setSleepsAtHospital(final BuildingHospital buildingHospital);
 }

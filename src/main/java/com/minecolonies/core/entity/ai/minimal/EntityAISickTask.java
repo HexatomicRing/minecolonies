@@ -182,16 +182,16 @@ public class EntityAISickTask implements IStateAI
         final IColony colony = citizen.getCitizenColonyHandler().getColony();
         final IBuilding hospital = colony.getBuildingManager().getBuilding(hospitalPos);
 
-        if (hospital instanceof BuildingHospital)
+        if (hospital instanceof BuildingHospital buildingHospital)
         {
-            if (usedBed != null && !((BuildingHospital) hospital).getBedList().contains(usedBed))
+            if (usedBed != null && !buildingHospital.getBedList().contains(usedBed))
             {
                 usedBed = null;
             }
 
             if (usedBed == null)
             {
-                for (final BlockPos pos : ((BuildingHospital) hospital).getBedList())
+                for (final BlockPos pos : buildingHospital.getBedList())
                 {
                     final Level world = citizen.level;
                     BlockState state = world.getBlockState(pos);
@@ -200,9 +200,9 @@ public class EntityAISickTask implements IStateAI
                           && state.getValue(BedBlock.PART).equals(BedPart.HEAD)
                           && world.isEmptyBlock(pos.above()))
                     {
-                        citizen.getCitizenDiseaseHandler().setSleepsAtHospital(true);
+                        citizen.getCitizenDiseaseHandler().setSleepsAtHospital(buildingHospital);
                         usedBed = pos;
-                        ((BuildingHospital) hospital).registerPatient(usedBed, citizen.getCivilianID());
+                        buildingHospital.registerPatient(usedBed, citizen.getCivilianID());
                         return FIND_EMPTY_BED;
                     }
                 }
@@ -369,7 +369,7 @@ public class EntityAISickTask implements IStateAI
     private IState goToHut()
     {
         final IBuilding buildingWorker = citizenData.getWorkBuilding();
-        citizen.getCitizenDiseaseHandler().setSleepsAtHospital(false);
+        citizen.getCitizenDiseaseHandler().setSleepsAtHospital(null);
 
         if (buildingWorker == null)
         {
@@ -390,7 +390,7 @@ public class EntityAISickTask implements IStateAI
      */
     private IState goToHospital()
     {
-        citizen.getCitizenDiseaseHandler().setSleepsAtHospital(false);
+        citizen.getCitizenDiseaseHandler().setSleepsAtHospital(null);
         if (placeToPath == null)
         {
             return SEARCH_HOSPITAL;
@@ -482,7 +482,7 @@ public class EntityAISickTask implements IStateAI
         citizen.stopUsingItem();
         citizen.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         placeToPath = null;
-        citizen.getCitizenDiseaseHandler().setSleepsAtHospital(false);
+        citizen.getCitizenDiseaseHandler().setSleepsAtHospital(null);
     }
 
     // TODO: Citizen AI should set status icons

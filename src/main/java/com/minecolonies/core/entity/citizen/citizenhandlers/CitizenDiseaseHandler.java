@@ -6,8 +6,9 @@ import com.minecolonies.api.colony.IColonyManager;
 import com.minecolonies.api.colony.buildings.IBuilding;
 import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
 import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenDiseaseHandler;
+import com.minecolonies.api.util.BlockPosUtil;
 import com.minecolonies.core.MineColonies;
-import com.minecolonies.core.colony.buildings.workerbuildings.BuildingCook;
+import com.minecolonies.core.colony.buildings.workerbuildings.BuildingHospital;
 import com.minecolonies.core.colony.jobs.AbstractJobGuard;
 import com.minecolonies.core.colony.jobs.JobHealer;
 import net.minecraft.core.BlockPos;
@@ -61,9 +62,9 @@ public class CitizenDiseaseHandler implements ICitizenDiseaseHandler
     private int immunityTicks = 0;
 
     /**
-     * Whether the citizen sleeps at the hostpital
+     * Pos of the hospital the citizen might be sleeping at (or null if not sleeping at a hospital).
      */
-    private boolean sleepsAtHospital = false;
+    private BlockPos hospitalPos = null;
 
     /**
      * The initial citizen count
@@ -152,6 +153,10 @@ public class CitizenDiseaseHandler implements ICitizenDiseaseHandler
     {
         compound.putString(TAG_DISEASE, disease);
         compound.putInt(TAG_IMMUNITY, immunityTicks);
+        if (hospitalPos != null)
+        {
+            BlockPosUtil.write(compound, TAG_HOSPITAL, hospitalPos);
+        }
     }
 
     @Override
@@ -163,6 +168,10 @@ public class CitizenDiseaseHandler implements ICitizenDiseaseHandler
             this.disease = compound.getString(TAG_DISEASE);
         }
         this.immunityTicks = compound.getInt(TAG_IMMUNITY);
+        if (compound.contains(TAG_HOSPITAL))
+        {
+            hospitalPos = BlockPosUtil.read(compound, TAG_HOSPITAL);
+        }
     }
 
     @Override
@@ -175,11 +184,9 @@ public class CitizenDiseaseHandler implements ICitizenDiseaseHandler
     public void cure()
     {
         this.disease = "";
-        sleepsAtHospital = false;
         if (citizen.getCitizenSleepHandler().isAsleep())
         {
             citizen.stopSleeping();
-            final BlockPos hospitalPos = citizen.getCitizenColonyHandler().getColony().getBuildingManager().getBestBuilding(citizen, BuildingCook.class);
             final IColony colony = citizen.getCitizenColonyHandler().getColony();
             final IBuilding hospital = colony.getBuildingManager().getBuilding(hospitalPos);
             if (hospital != null)
@@ -198,19 +205,39 @@ public class CitizenDiseaseHandler implements ICitizenDiseaseHandler
 
             citizen.getCitizenColonyHandler().getColony().getStatisticsManager().increment(CITIZENS_HEALED, citizen.getCitizenColonyHandler().getColony().getDay());
         }
-
+        hospitalPos = null;
         citizen.markDirty(0);
     }
 
     @Override
     public boolean sleepsAtHospital()
     {
-        return sleepsAtHospital;
+        if (hospitalPos != null)
+        {
+            final IColony colony = citizen.getCitizenColonyHandler().getColony();
+            if (colony != null)
+            {
+                final BuildingHospital hospital = colony.getBuildingManager().getBuilding(hospitalPos, BuildingHospital.class);
+                if (hospital != null)
+                {
+                    return hospital.isInBed(citizen);
+                }
+                hospitalPos = null;
+            }
+        }
+        return hospitalPos != null;
     }
 
     @Override
-    public void setSleepsAtHospital(final boolean isAtHospital)
+    public void setSleepsAtHospital(final BuildingHospital buildingHospital)
     {
-        sleepsAtHospital = isAtHospital;
+        if (buildingHospital == null)
+        {
+            hospitalPos = null;
+        }
+        else
+        {
+            hospitalPos = buildingHospital.getPosition();
+        }
     }
 }
