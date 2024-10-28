@@ -16,6 +16,7 @@ import com.minecolonies.core.Network;
 import com.minecolonies.core.colony.buildings.workerbuildings.BuildingCook;
 import com.minecolonies.core.colony.interactionhandling.StandardInteraction;
 import com.minecolonies.core.colony.jobs.AbstractJobGuard;
+import com.minecolonies.core.colony.jobs.JobCook;
 import com.minecolonies.core.entity.other.SittingEntity;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
 import com.minecolonies.core.network.messages.client.ItemParticleEffectMessage;
@@ -51,7 +52,7 @@ public class EntityAIEatTask implements IStateAI
     /**
      * Min distance in blocks to placeToPath block.
      */
-    private static final int MIN_DISTANCE_TO_RESTAURANT = 3;
+    private static final int MIN_DISTANCE_TO_RESTAURANT = 2;
 
     /**
      * Time required to eat in seconds.
@@ -275,6 +276,12 @@ public class EntityAIEatTask implements IStateAI
                 int qty = (int) (Math.max(1.0, (FULL_SATURATION - citizen.getCitizenData().getSaturation()) / FoodUtils.getFoodValue(storageToGet.getItemStack(), citizen)) * homeBuildingLevel/2.0);
                 InventoryUtils.transferItemStackIntoNextBestSlotInItemHandler(cookBuilding, storageToGet, qty, citizen.getInventoryCitizen());
                 return EAT;
+            }
+
+            if (citizen.getCitizenData().getJob() instanceof JobCook jobCook && jobCook.getBuildingPos().equals(restaurantPos) && MathUtils.RANDOM.nextInt(TICKS_SECOND) <= 0)
+            {
+                reset();
+                return DONE;
             }
         }
 

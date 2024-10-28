@@ -87,11 +87,6 @@ public class EntityAIWorkCook extends AbstractEntityAIUsesFurnace<JobCook, Build
       new VisibleCitizenStatus(new ResourceLocation(Constants.MOD_ID, "textures/icons/work/cook.png"), "com.minecolonies.gui.visiblestatus.cook");
 
     /**
-     * The list of items needed for the assistant
-     */
-    private Set<ItemStorage> reservedItemCache = new HashSet<>();
-
-    /**
      * Constructor for the Cook. Defines the tasks the cook executes.
      *
      * @param job a cook job to use.
@@ -130,7 +125,6 @@ public class EntityAIWorkCook extends AbstractEntityAIUsesFurnace<JobCook, Build
     @Override
     public IAIState startWorking()
     {
-        reservedItemCache.clear();
         return super.startWorking();
     }
 
@@ -336,8 +330,6 @@ public class EntityAIWorkCook extends AbstractEntityAIUsesFurnace<JobCook, Build
     @Override
     protected IAIState checkForImportantJobs()
     {
-        this.reservedItemCache.clear(); //Clear the cache of current pending work
-
         citizenToServe.clear();
         final List<? extends Player> playerList = WorldUtil.getEntitiesWithinBuilding(world, Player.class,
           building, player -> player != null
