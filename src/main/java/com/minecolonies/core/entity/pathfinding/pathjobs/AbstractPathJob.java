@@ -1128,7 +1128,6 @@ public abstract class AbstractPathJob implements Callable<Path>, IPathJob
         }
 
         result.searchedNodes = totalNodesVisited;
-        Minecraft mc = Minecraft.getInstance();
         return new Path(Arrays.asList(points), new BlockPos(targetNode.x, targetNode.y, targetNode.z), reachesDestination);
     }
 
