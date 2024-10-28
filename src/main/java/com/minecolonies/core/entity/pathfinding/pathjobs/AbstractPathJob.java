@@ -19,12 +19,9 @@ import com.minecolonies.core.entity.pathfinding.world.CachingBlockLookup;
 import com.minecolonies.core.entity.pathfinding.world.ChunkCache;
 import com.minecolonies.core.network.messages.client.SyncPathMessage;
 import com.minecolonies.core.util.WorkerUtil;
-import com.mojang.authlib.minecraft.client.MinecraftClient;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Mob;
@@ -1132,9 +1129,6 @@ public abstract class AbstractPathJob implements Callable<Path>, IPathJob
 
         result.searchedNodes = totalNodesVisited;
         Minecraft mc = Minecraft.getInstance();
-        for(Node n: points){
-            mc.level.addParticle(ParticleTypes.HAPPY_VILLAGER, n.x + 0.5, n.y + 1, n.z + 0.5, 0, 0, 0);
-        }
         return new Path(Arrays.asList(points), new BlockPos(targetNode.x, targetNode.y, targetNode.z), reachesDestination);
     }
 
