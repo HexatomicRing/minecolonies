@@ -174,7 +174,7 @@ public class EntityAIWorkCook extends AbstractEntityAIUsesFurnace<JobCook, Build
         if (!building.isInBuilding(citizenToServe.peek().blockPosition()))
         {
             worker.getNavigation().stop();
-            playerToServe.poll();
+            citizenToServe.poll();
             return getState();
         }
 
