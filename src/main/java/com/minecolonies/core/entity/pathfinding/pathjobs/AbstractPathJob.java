@@ -900,7 +900,8 @@ public abstract class AbstractPathJob implements Callable<Path>, IPathJob
         {
             cost += ColonyConstants.rand.nextDouble() * pathingOptions.randomnessFactor;
         }
-
+        // todo The speed of the citizen should be divided here, and distinguish costs that are related
+        // with speed and not related with speed (e.g. on rail is not related with speed)
         if (!isSwimming)
         {
             if (onPath)
@@ -925,20 +926,10 @@ public abstract class AbstractPathJob implements Callable<Path>, IPathJob
             {
                 Direction facing = below.getValue(StairBlock.FACING);
                 StairsShape shape = below.getValue(StairBlock.SHAPE);
-                if(dY > 0)
-                {
-                    if(dX == 1) correctlyOnStairs = facing == Direction.EAST || (facing == Direction.NORTH && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.SOUTH && shape == StairsShape.OUTER_LEFT);
-                    if(dX == -1) correctlyOnStairs = facing == Direction.WEST || (facing == Direction.SOUTH && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.NORTH && shape == StairsShape.OUTER_LEFT);
-                    if(dZ == 1) correctlyOnStairs = facing == Direction.SOUTH || (facing == Direction.EAST && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.WEST && shape == StairsShape.OUTER_LEFT);
-                    if(dZ == -1) correctlyOnStairs = facing == Direction.NORTH || (facing == Direction.WEST && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.EAST && shape == StairsShape.OUTER_LEFT);
-                }
-                if(dY < 0)
-                {
-                    if(dX == -1) correctlyOnStairs = facing == Direction.EAST || (facing == Direction.NORTH && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.SOUTH && shape == StairsShape.OUTER_LEFT);
-                    if(dX == 1) correctlyOnStairs = facing == Direction.WEST || (facing == Direction.SOUTH && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.NORTH && shape == StairsShape.OUTER_LEFT);
-                    if(dZ == -1) correctlyOnStairs = facing == Direction.SOUTH || (facing == Direction.EAST && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.WEST && shape == StairsShape.OUTER_LEFT);
-                    if(dZ == 1) correctlyOnStairs = facing == Direction.NORTH || (facing == Direction.WEST && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.EAST && shape == StairsShape.OUTER_LEFT);
-                }
+                if(dX == dY) correctlyOnStairs = facing == Direction.EAST || (facing == Direction.NORTH && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.SOUTH && shape == StairsShape.OUTER_LEFT);
+                else if(dX != 0) correctlyOnStairs = facing == Direction.WEST || (facing == Direction.SOUTH && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.NORTH && shape == StairsShape.OUTER_LEFT);
+                else if(dZ == dY) correctlyOnStairs = facing == Direction.SOUTH || (facing == Direction.EAST && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.WEST && shape == StairsShape.OUTER_LEFT);
+                else if(dZ != 0) correctlyOnStairs = facing == Direction.NORTH || (facing == Direction.WEST && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.EAST && shape == StairsShape.OUTER_LEFT);
             }
             if (dY != 0 && !(ladder && parent.isLadder()) && !correctlyOnStairs)
             {
