@@ -126,6 +126,11 @@ public final class ModCreativeTabs
           output.accept(ModItems.large_milk_bottle);
           output.accept(ModItems.large_soy_milk_bottle);
 
+          for (final Item food : ModItems.getAllIngredients())
+          {
+              output.accept(food);
+          }
+
           for (final Item food : ModItems.getAllFoods())
           {
               output.accept(food);

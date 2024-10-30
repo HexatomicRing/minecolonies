@@ -164,7 +164,7 @@ public final class ModItems
     }
 
     @NotNull
-    public static Item[] getAllFoods()
+    public static Item[] getAllIngredients()
     {
         return new Item[] {
           muffin_dough,
@@ -174,7 +174,13 @@ public final class ModItems
           cornmeal,
           creamcheese,
           soysauce,
+        };
+    }
 
+    @NotNull
+    public static Item[] getAllFoods()
+    {
+        return new Item[] {
           // Tier 1 Food
           cheddar_cheese,
           feta_cheese,
