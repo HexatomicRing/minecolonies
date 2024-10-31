@@ -544,18 +544,6 @@ public class CompatibilityManager implements ICompatibilityManager
     }
 
     @Override
-    public boolean isFreeBlock(final Block block)
-    {
-        return freeBlocks.contains(block);
-    }
-
-    @Override
-    public boolean isFreePos(final BlockPos block)
-    {
-        return freePositions.contains(block);
-    }
-
-    @Override
     public CreativeModeTab getCreativeTab(final ItemStorage checkItem)
     {
         return creativeModeTabMap.get(checkItem);

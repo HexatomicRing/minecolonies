@@ -237,20 +237,6 @@ public interface ICompatibilityManager
     boolean isLuckyBlock(final Block block);
 
     /**
-     * Check if the block is configured to bypass the colony restrictions.
-     * @param block the block to check.
-     * @return true if so.
-     */
-    boolean isFreeBlock(Block block);
-
-    /**
-     * Check if the position is configured to bypass the colony restrictions.
-     * @param block the position to check.
-     * @return true if so.
-     */
-    boolean isFreePos(BlockPos block);
-
-    /**
      * Get the creative tab for a stack.
      * @param checkItem the storage wrapper.
      */
