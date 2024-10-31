@@ -6,7 +6,6 @@ import com.minecolonies.api.crafting.ItemStorage;
 import com.minecolonies.api.util.Disease;
 import com.minecolonies.api.util.Tuple;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
