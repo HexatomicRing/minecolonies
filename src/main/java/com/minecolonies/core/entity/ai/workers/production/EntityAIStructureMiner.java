@@ -8,7 +8,6 @@ import com.minecolonies.api.entity.ai.statemachine.AITarget;
 import com.minecolonies.api.entity.ai.statemachine.states.AIWorkerState;
 import com.minecolonies.api.entity.ai.statemachine.states.IAIState;
 import com.minecolonies.api.entity.citizen.VisibleCitizenStatus;
-import com.minecolonies.api.loot.ModLootConditions;
 import com.minecolonies.api.util.*;
 import com.minecolonies.api.util.constant.Constants;
 import com.minecolonies.core.colony.buildings.modules.MinerLevelManagementModule;
@@ -33,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootParams.Builder;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
@@ -60,6 +60,20 @@ import static com.minecolonies.core.util.WorkerUtil.getLastLadder;
  */
 public class EntityAIStructureMiner extends AbstractEntityAIStructureWithWorkOrder<JobMiner, BuildingMiner>
 {
+    /**
+     * The loot parameter set definition
+     */
+    public static final LootContextParamSet LUCKY_ORE_PARAM_SET = (new LootContextParamSet.Builder())
+                                                                    .required(LootContextParams.ORIGIN)
+                                                                    .required(LootContextParams.THIS_ENTITY)
+                                                                    .required(LootContextParams.TOOL)
+                                                                    .build();
+
+    /**
+     * Lucky ore loot table
+     */
+    public static final ResourceLocation LUCKY_ORE_LOOT_TABLE = new ResourceLocation(Constants.MOD_ID, "loot_tables/miner/lucky_ore");
+
     /**
      * Lead the miner to the other side of the shaft.
      */
@@ -105,20 +119,6 @@ public class EntityAIStructureMiner extends AbstractEntityAIStructureWithWorkOrd
      * Check for liquids in the following range.
      */
     private static final int LIQUID_CHECK_RANGE = 5;
-
-    /**
-     * The loot parameter set definition
-     */
-    private static final LootContextParamSet luckyOreParamSet = (new LootContextParamSet.Builder())
-                                                                  .required(LootContextParams.ORIGIN)
-                                                                  .required(LootContextParams.THIS_ENTITY)
-                                                                  .required(LootContextParams.TOOL)
-                                                                  .build();
-
-    /**
-     * Lucky ore loot table
-     */
-    private static final ResourceLocation LUCKY_ORE_LOOT_TABLE = new ResourceLocation(Constants.MOD_ID, "loot_tables/miner/lucky_ore");
 
     /**
      * Mining icon
@@ -982,16 +982,15 @@ public class EntityAIStructureMiner extends AbstractEntityAIStructureWithWorkOrd
 
             if (canGetLuckyBlock)
             {
-                final int level = building.getBuildingLevel();
+                final LootDataManager manager = building.getColony().getWorld().getServer().getLootData();
+                final ResourceLocation lootTableId = LUCKY_ORE_LOOT_TABLE.withSuffix(String.valueOf(building.getBuildingLevel()));
                 final LootParams lootParams = new Builder((ServerLevel) this.world)
                                                 .withParameter(LootContextParams.ORIGIN, position.getCenter())
                                                 .withParameter(LootContextParams.THIS_ENTITY, worker)
                                                 .withParameter(LootContextParams.TOOL, worker.getMainHandItem())
-                                                .withParameter(ModLootConditions.BUILDING_LEVEL, level)
-                                                .create(luckyOreParamSet);
-                final ObjectArrayList<ItemStack> randomItems =
-                  building.getColony().getWorld().getServer().getLootData().getLootTable(LUCKY_ORE_LOOT_TABLE).getRandomItems(lootParams);
+                                                .create(LUCKY_ORE_PARAM_SET);
 
+                final ObjectArrayList<ItemStack> randomItems = manager.getLootTable(lootTableId).getRandomItems(lootParams);
                 for (final ItemStack stack : randomItems)
                 {
                     InventoryUtils.transferItemStackIntoNextBestSlotInItemHandler(stack, worker.getInventoryCitizen());

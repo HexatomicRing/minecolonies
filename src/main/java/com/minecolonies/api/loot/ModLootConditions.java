@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
@@ -27,13 +26,9 @@ public final class ModLootConditions
 
     public static final ResourceLocation ENTITY_IN_BIOME_TAG_ID = new ResourceLocation(MOD_ID, "entity_in_biome_tag");
     public static final ResourceLocation RESEARCH_UNLOCKED_ID   = new ResourceLocation(MOD_ID, "research_unlocked");
-    public static final ResourceLocation BUILDING_LEVEL_ID      = new ResourceLocation(MOD_ID, "building_level");
-
-    public static final LootContextParam<Integer> BUILDING_LEVEL = new LootContextParam<>(BUILDING_LEVEL_ID);
 
     public static final RegistryObject<LootItemConditionType> entityInBiomeTag;
     public static final RegistryObject<LootItemConditionType> researchUnlocked;
-    public static final RegistryObject<LootItemConditionType> buildingLevel;
 
     // also some convenience definitions for existing conditions; some stolen from BlockLootSubProvider
     public static final LootItemCondition.Builder HAS_SILK_TOUCH              =
@@ -49,11 +44,7 @@ public final class ModLootConditions
 
         researchUnlocked = DEFERRED_REGISTER.register(ModLootConditions.RESEARCH_UNLOCKED_ID.getPath(),
           () -> new LootItemConditionType(new ResearchUnlocked.Serializer()));
-
-        buildingLevel = DEFERRED_REGISTER.register(ModLootConditions.BUILDING_LEVEL_ID.getPath(),
-          () -> new LootItemConditionType(new BuildingLevel.Serializer()));
     }
-
     private ModLootConditions()
     {
         throw new IllegalStateException("Tried to initialize: ModLootConditions but this is a Utility class.");
