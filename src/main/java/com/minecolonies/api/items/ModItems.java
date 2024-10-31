@@ -3,8 +3,6 @@ package com.minecolonies.api.items;
 import com.minecolonies.core.items.ItemFood;
 import net.minecraft.world.item.Item;
 
-import java.util.List;
-
 /**
  * Class handling the registering of the mod items.
  * <p>
@@ -119,11 +117,16 @@ public final class ModItems
     /**
      * Get a list of all possible food items.
      *
-     * @return a list of food items.
+     * @return an array of food items.
      */
-    public static List<ItemFood> getFoodItems()
+    public static Item[] getAllFoods()
     {
-        return List.of(cabochis,
+        return new Item[] {
+          milkyBread,
+          sugaryBread,
+          goldenBread,
+          chorusBread,
+          cabochis,
           cheddar_cheese,
           congee,
           cooked_rice,
@@ -145,7 +148,8 @@ public final class ModItems
           stuffed_pepper,
           stuffed_pita,
           sushi_roll,
-          tofu);
+          tofu
+        };
     }
 
     /**

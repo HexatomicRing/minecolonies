@@ -12,26 +12,20 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 import static com.minecolonies.api.blocks.decorative.AbstractBlockGate.IRON_GATE;
 import static com.minecolonies.api.blocks.decorative.AbstractBlockGate.WOODEN_GATE;
@@ -153,53 +147,53 @@ public final class ModItemsInitializer
         ModItems.scanAnalyzer = new ItemScanAnalyzer("scan_analyzer", new Item.Properties());
 
         // Tier 1 Food Items
-        ModItems.cheddar_cheese = registerFoodItem(1, ModJobs.CHEF_ID, (builder) -> builder.nutrition(4).saturationModifier(0.6F).build());
-        ModItems.feta_cheese = registerFoodItem(1, ModJobs.CHEF_ID, (builder) -> builder.nutrition(4).saturationModifier(0.6F).build());
-        ModItems.cooked_rice = registerFoodItem(1, ModJobs.CHEF_ID, builder -> builder.nutrition(4).saturationModifier(0.6F).usingConvertsTo(Items.BOWL).build());
-        ModItems.tofu = registerFoodItem(1, ModJobs.CHEF_ID, builder -> builder.nutrition(4).saturationModifier(0.6F).build());
-        ModItems.flatbread = registerFoodItem(1, ModJobs.BAKER_ID, Set.of(Tags.Items.FOODS_BREAD), builder -> builder.nutrition(4).saturationModifier(0.6F).build());
+        ModItems.cheddar_cheese = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.feta_cheese = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.cooked_rice = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.6F).usingConvertsTo(Items.BOWL).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.tofu = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.6F).build()), ModJobs.CHEF_ID.getPath(), 1);
+        ModItems.flatbread = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(4).saturationModifier(0.6F).build()), ModJobs.BAKER_ID.getPath(), 1);
 
         // Tier 2 Food Items
-        ModItems.manchet_bread = registerFoodItem(2, ModJobs.BAKER_ID, Set.of(Tags.Items.FOODS_BREAD), builder -> builder.nutrition(6).saturationModifier(1.0F).build());
-        ModItems.lembas_scone = registerFoodItem(2, ModJobs.BAKER_ID, Set.of(Tags.Items.FOODS_BREAD), builder -> builder.nutrition(6).saturationModifier(1.0F).build());
-        ModItems.muffin = registerFoodItem(2, ModJobs.BAKER_ID, Set.of(Tags.Items.FOODS_BREAD, Tags.Items.FOODS_CANDY), builder -> builder.nutrition(6).saturationModifier(1.0F).build());
-        ModItems.pottage = registerFoodItem(2, ModJobs.CHEF_ID, Set.of(Tags.Items.FOODS_SOUP, Tags.Items.FOODS_VEGETABLE), builder -> builder.nutrition(6).saturationModifier(1.0F).usingConvertsTo(Items.BOWL).build());
-        ModItems.pasta_plain = registerFoodItem(2, ModJobs.CHEF_ID, builder -> builder.nutrition(6).saturationModifier(1.0F).usingConvertsTo(Items.BOWL).build());
+        ModItems.manchet_bread = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationModifier(1.0F).build()), ModJobs.BAKER_ID.getPath(), 2);
+        ModItems.lembas_scone = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationModifier(1.0F).build()), ModJobs.BAKER_ID.getPath(), 2);
+        ModItems.muffin = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationModifier(1.0F).build()), ModJobs.BAKER_ID.getPath(), 2);
+        ModItems.pottage = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationModifier(1.0F).usingConvertsTo(Items.BOWL).build()), ModJobs.CHEF_ID.getPath(), 2);
+        ModItems.pasta_plain = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationModifier(1.0F).usingConvertsTo(Items.BOWL).build()), ModJobs.CHEF_ID.getPath(), 2);
 
         // Tier 3 Food items
-        ModItems.hand_pie = registerFoodItem(3, ModJobs.CHEF_ID, Set.of(Tags.Items.FOODS_BREAD, Tags.Items.FOODS_CANDY), builder -> builder.nutrition(8).saturationModifier(1.2F).build());
+        ModItems.hand_pie = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationModifier(1.2F).build()), ModJobs.CHEF_ID.getPath(), 3);
 
         // Cold Biomes
         // Tier 2
-        ModItems.cabochis = registerFoodItem(2, ModJobs.CHEF_ID, Set.of(Tags.Items.FOODS_SOUP, Tags.Items.FOODS_VEGETABLE), builder -> builder.nutrition(6).saturationModifier(1.0F).usingConvertsTo(Items.BOWL).build());
+        ModItems.cabochis = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationModifier(1.0F).usingConvertsTo(Items.BOWL).build()), ModJobs.CHEF_ID.getPath(), 2);
         // Tier 3
-        ModItems.lamb_stew = registerFoodItem(3, ModJobs.CHEF_ID, Set.of(Tags.Items.FOODS_SOUP, Tags.Items.FOODS_COOKED_MEAT), builder -> builder.nutrition(8).saturationModifier(1.2F).usingConvertsTo(Items.BOWL).build());
+        ModItems.lamb_stew = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationModifier(1.2F).usingConvertsTo(Items.BOWL).build()), ModJobs.CHEF_ID.getPath(), 3);
 
         // Hot Humid Biomes
         // Tier 2
-        ModItems.rice_ball = registerFoodItem(2, ModJobs.CHEF_ID, builder -> builder.nutrition(6).saturationModifier(1.0F).build());
+        ModItems.rice_ball = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationModifier(1.0F).build()), ModJobs.CHEF_ID.getPath(), 2);
         // Tier 3
-        ModItems.sushi_roll = registerFoodItem(3, ModJobs.CHEF_ID, builder -> builder.nutrition(8).saturationModifier(1.2F).build());
+        ModItems.sushi_roll = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationModifier(1.2F).build()), ModJobs.CHEF_ID.getPath(), 3);
 
         // Temperate Biomes
         // Tier 2
-        ModItems.pasta_tomato = registerFoodItem(2, ModJobs.CHEF_ID, builder -> builder.nutrition(6).saturationModifier(1.0F).usingConvertsTo(Items.BOWL).build());
+        ModItems.pasta_tomato = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationModifier(1.0F).usingConvertsTo(Items.BOWL).build()), ModJobs.CHEF_ID.getPath(), 2);
         // Tier 3
-        ModItems.eggplant_dolma = registerFoodItem(3, ModJobs.CHEF_ID, Set.of(Tags.Items.FOODS_VEGETABLE), builder -> builder.nutrition(8).saturationModifier(1.2F).build());
-        ModItems.stuffed_pita = registerFoodItem(3, ModJobs.CHEF_ID, Set.of(Tags.Items.FOODS_BREAD, Tags.Items.FOODS_VEGETABLE), builder -> builder.nutrition(8).saturationModifier(1.2F).build());
+        ModItems.eggplant_dolma = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationModifier(1.2F).build()), ModJobs.CHEF_ID.getPath(), 3);
+        ModItems.stuffed_pita = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationModifier(1.2F).build()), ModJobs.CHEF_ID.getPath(), 3);
 
         // Hot Dry Biomes
         // Tier 2
-        ModItems.pepper_hummus = registerFoodItem(2, ModJobs.CHEF_ID, builder -> builder.nutrition(6).saturationModifier(1.0F).build());
+        ModItems.pepper_hummus = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationModifier(1.0F).build()), ModJobs.CHEF_ID.getPath(), 2);
         // Tier 3
-        ModItems.pita_hummus = registerFoodItem(3, ModJobs.CHEF_ID, builder -> builder.nutrition(8).saturationModifier(1.2F).build());
+        ModItems.pita_hummus = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationModifier(1.2F).build()), ModJobs.CHEF_ID.getPath(), 3);
 
         // Require trading
         // Tier 2
-        ModItems.congee = registerFoodItem(2, ModJobs.CHEF_ID, builder -> builder.nutrition(6).saturationModifier(1.0F).usingConvertsTo(Items.BOWL).build());
+        ModItems.congee = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(6).saturationModifier(1.0F).usingConvertsTo(Items.BOWL).build()), ModJobs.CHEF_ID.getPath(), 2);
         // Tier 3
-        ModItems.stew_trencher = registerFoodItem(3, ModJobs.CHEF_ID, Set.of(Tags.Items.FOODS_BREAD), builder -> builder.nutrition(8).saturationModifier(1.2F).build());
-        ModItems.stuffed_pepper = registerFoodItem(3, ModJobs.CHEF_ID, Set.of(Tags.Items.FOODS_VEGETABLE), builder -> builder.nutrition(8).saturationModifier(1.2F).build());
+        ModItems.stew_trencher = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationModifier(1.2F).build()), ModJobs.CHEF_ID.getPath(), 3);
+        ModItems.stuffed_pepper = new ItemFood((new Item.Properties()).food(new FoodProperties.Builder().nutrition(8).saturationModifier(1.2F).build()), ModJobs.CHEF_ID.getPath(), 3);
 
         // Just dough
         ModItems.muffin_dough = new Item((new Item.Properties()));
@@ -449,22 +443,4 @@ public final class ModItemsInitializer
       0
     ));
 
-    public static ItemFood registerFoodItem(final int tier, final ResourceLocation worker, final Consumer<FoodProperties.Builder> foodPropertiesGenerator)
-    {
-        return registerFoodItem(tier, worker, Set.of(), foodPropertiesGenerator);
-    }
-
-    public static ItemFood registerFoodItem(
-      final int tier,
-      final ResourceLocation worker,
-      final Set<TagKey<Item>> foodTags,
-      final Consumer<FoodProperties.Builder> foodPropertiesGenerator)
-    {
-        final FoodProperties.Builder foodPropertiesBuilder = new FoodProperties.Builder();
-        foodPropertiesGenerator.accept(foodPropertiesBuilder);
-        final Properties itemProperties = new Properties().food(foodPropertiesBuilder.build());
-
-        final List<TagKey<Item>> tags = Stream.concat(Stream.of(Tags.Items.FOODS), foodTags.stream()).toList();
-        return new ItemFood(itemProperties, worker.getPath(), tier, tags);
-    }
 }
