@@ -16,7 +16,6 @@ import com.minecolonies.api.items.ModTags;
 import com.minecolonies.api.util.*;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -31,7 +30,6 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
@@ -135,16 +133,6 @@ public class CompatibilityManager implements ICompatibilityManager
     private static ImmutableList<ItemStack> allItems = ImmutableList.of();
 
     /**
-     * Free block positions everyone can interact with.
-     */
-    private final Set<Block> freeBlocks = new HashSet<>();
-
-    /**
-     * Free positions everyone can interact with.
-     */
-    private final Set<BlockPos> freePositions = new HashSet<>();
-
-    /**
      * Hashmap of mobs we may or may not attack.
      */
     private ImmutableSet<ResourceLocation> monsters = ImmutableSet.of();
@@ -179,8 +167,6 @@ public class CompatibilityManager implements ICompatibilityManager
 
         luckyOres.clear();
         recruitmentCostsWeights.clear();
-        freeBlocks.clear();
-        freePositions.clear();
         monsters = ImmutableSet.of();
         creativeModeTabMap.clear();
     }
@@ -198,7 +184,6 @@ public class CompatibilityManager implements ICompatibilityManager
 
         discoverLuckyOres();
         discoverRecruitCosts();
-        discoverFreeBlocksAndPos();
         discoverModCompat();
 
         discoverCompostRecipes(recipeManager);
@@ -254,7 +239,6 @@ public class CompatibilityManager implements ICompatibilityManager
         // the below are loaded from config files, which have been synched already by this point
         discoverLuckyOres();
         discoverRecruitCosts();
-        discoverFreeBlocksAndPos();
         discoverModCompat();
     }
 
@@ -552,18 +536,6 @@ public class CompatibilityManager implements ICompatibilityManager
             return luckyOresInLevel.get(random.nextInt(luckyOresInLevel.size())).getItemStack().copy();
         }
         return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean isFreeBlock(final Block block)
-    {
-        return freeBlocks.contains(block);
-    }
-
-    @Override
-    public boolean isFreePos(final BlockPos block)
-    {
-        return freePositions.contains(block);
     }
 
     @Override
@@ -903,32 +875,6 @@ public class CompatibilityManager implements ICompatibilityManager
     private static Tuple<BlockState, ItemStorage> readLeafSaplingEntryFromNBT(final CompoundTag compound)
     {
         return new Tuple<>(NbtUtils.readBlockState(BuiltInRegistries.BLOCK.asLookup(), compound), new ItemStorage(ItemStack.of(compound), false, true));
-    }
-
-    /**
-     * Load free blocks and pos from the config and add to colony.
-     */
-    private void discoverFreeBlocksAndPos()
-    {
-        for (final String s : MinecoloniesAPIProxy.getInstance().getConfig().getServer().freeToInteractBlocks.get())
-        {
-            try
-            {
-                final Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(s));
-                if (block != null && !(block instanceof AirBlock))
-                {
-                    freeBlocks.add(block);
-                }
-            }
-            catch (final Exception ex)
-            {
-                final BlockPos pos = BlockPosUtil.getBlockPosOfString(s);
-                if (pos != null)
-                {
-                    freePositions.add(pos);
-                }
-            }
-        }
     }
 
     /**
