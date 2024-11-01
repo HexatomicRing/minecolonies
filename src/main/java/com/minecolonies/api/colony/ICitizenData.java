@@ -467,4 +467,11 @@ public interface ICitizenData extends ICivilianData, IQuestGiver, IQuestParticip
      * @return the full last eaten queue.
      */
     Queue<Item> getLastEatenQueue();
+
+    /**
+     * Get the home position of the citizen.
+     * @return the pos to go home to.
+     */
+    @Nullable
+    BlockPos getHomePosition();
 }

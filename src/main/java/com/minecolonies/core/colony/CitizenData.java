@@ -7,6 +7,7 @@ import com.minecolonies.api.colony.CitizenNameFile;
 import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.colony.IColony;
 import com.minecolonies.api.colony.buildings.IBuilding;
+import com.minecolonies.api.colony.buildings.ModBuildings;
 import com.minecolonies.api.colony.buildings.modules.IAssignsJob;
 import com.minecolonies.api.colony.interactionhandling.ChatPriority;
 import com.minecolonies.api.colony.interactionhandling.IInteractionResponseHandler;
@@ -2063,5 +2064,31 @@ public class CitizenData implements ICitizenData
     public Queue<Item> getLastEatenQueue()
     {
         return lastEatenFoods;
+    }
+
+    @Nullable
+    public BlockPos getHomePosition()
+    {
+        @Nullable final IBuilding homeBuilding = getHomeBuilding();
+        if (homeBuilding != null)
+        {
+            return homeBuilding.getStandingPosition();
+        }
+
+        if (colony != null)
+        {
+            final IBuilding tavern = colony.getBuildingManager().getFirstBuildingMatching(b -> b.getBuildingType() == ModBuildings.tavern.get());
+            if (tavern != null)
+            {
+                return tavern.getStandingPosition();
+            }
+            else if (colony.getBuildingManager().getTownHall() != null)
+            {
+                return colony.getBuildingManager().getTownHall().getPosition();
+            }
+            return colony.getCenter();
+        }
+
+        return null;
     }
 }
