@@ -628,7 +628,7 @@ public class EntityCitizen extends AbstractEntityCitizen implements IThreatTable
             Network.getNetwork().sendToTrackingEntity(new ItemParticleEffectMessage(usedStack, getX(), getY(), getZ(), getXRot(), getYRot(), getEyeHeight()), this);
             if (citizenData != null)
             {
-                citizenData.addLastEaten(usedStack.getItem());
+                citizenData.getCitizenFoodHandler().addLastEaten(usedStack.getItem());
             }
             ItemStackUtils.consumeFood(usedStack, this, player.getInventory());
         }

@@ -4,6 +4,7 @@ import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.colony.buildings.IBuilding;
 import com.minecolonies.api.crafting.ItemStorage;
 import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
+import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenFoodHandler;
 import com.minecolonies.api.inventory.InventoryCitizen;
 import com.minecolonies.api.items.IMinecoloniesFoodItem;
 import com.minecolonies.core.tileentities.TileEntityRack;
@@ -99,7 +100,8 @@ public class FoodUtils
         int bestSlot = -1;
         Item bestItem = null;
 
-        final ICitizenData.CitizenFoodStats foodStats = citizenData.getFoodHappinessStats();
+        final ICitizenFoodHandler foodHandler = citizenData.getCitizenFoodHandler();
+        final ICitizenFoodHandler.CitizenFoodStats foodStats = foodHandler.getFoodHappinessStats();
         final int diversityRequirement = FoodUtils.getMinFoodDiversityRequirement(citizenData.getHomeBuilding() == null ? 0 : citizenData.getHomeBuilding().getBuildingLevel());
         final int qualityRequirement = FoodUtils.getMinFoodQualityRequirement(citizenData.getHomeBuilding() == null ? 0 : citizenData.getHomeBuilding().getBuildingLevel());
         for (int i = 0; i < inventoryCitizen.getSlots(); i++)
@@ -108,9 +110,9 @@ public class FoodUtils
             if ((menu == null || menu.contains(invStack)) && (citizenData.getHomeBuilding() == null || FoodUtils.canEat(invStack.getItemStack(), citizenData.getHomeBuilding().getBuildingLevel())))
             {
                 final boolean isMinecolfood = invStack.getItem() instanceof IMinecoloniesFoodItem;
-                final int localScore = citizenData.checkLastEaten(invStack.getItem()) * (isMinecolfood ? 2 : 1);
+                final int localScore = foodHandler.checkLastEaten(invStack.getItem()) * (isMinecolfood ? 2 : 1);
                 // If we're not at the restaurant and we've eaten this very recently, we should check out food at restaurant instead.
-                if (menu == null && citizenData.getLastEaten() == invStack.getItem())
+                if (menu == null && foodHandler.getLastEaten() == invStack.getItem())
                 {
                     continue;
                 }
@@ -158,12 +160,13 @@ public class FoodUtils
         final Level world = building.getColony().getWorld();
         final int homeBuildingLevel = citizenData.getHomeBuilding() == null ? 0 : citizenData.getHomeBuilding().getBuildingLevel();
 
-        final ICitizenData.CitizenFoodStats foodStats = citizenData.getFoodHappinessStats();
+        final ICitizenFoodHandler.CitizenFoodStats foodStats = citizenData.getCitizenFoodHandler().getFoodHappinessStats();
         final int diversityRequirement = FoodUtils.getMinFoodDiversityRequirement(citizenData.getHomeBuilding() == null ? 0 : citizenData.getHomeBuilding().getBuildingLevel());
         final int qualityRequirement = FoodUtils.getMinFoodQualityRequirement(citizenData.getHomeBuilding() == null ? 0 : citizenData.getHomeBuilding().getBuildingLevel());
 
         final boolean criticalDiversity = foodStats.diversity() <= diversityRequirement;
         final boolean criticalQuality = foodStats.quality() <= qualityRequirement;
+        final ICitizenFoodHandler foodHandler = citizenData.getCitizenFoodHandler();
 
         containerLoop: for (final BlockPos pos : building.getContainers())
         {
@@ -177,7 +180,7 @@ public class FoodUtils
                         if ((menu == null || menu.contains(storage)) && FoodUtils.canEat(storage.getItemStack(), homeBuildingLevel))
                         {
                             final boolean isMinecolfood = storage.getItem() instanceof IMinecoloniesFoodItem;
-                            final int localScore = citizenData.checkLastEaten(storage.getItem());
+                            final int localScore = foodHandler.checkLastEaten(storage.getItem());
 
                             // If this is great food and we're at critical levels, go with it!
                             if ((localScore < 0 && isMinecolfood) && (criticalDiversity || criticalQuality))
@@ -191,7 +194,7 @@ public class FoodUtils
                                 continue;
                             }
 
-                            if (isMinecolfood && !criticalQuality && MathUtils.RANDOM.nextInt(((IMinecoloniesFoodItem) storage.getItem()).getTier() + 2 - homeBuildingLevel) <= 0)
+                            if (isMinecolfood && !criticalQuality && MathUtils.RANDOM.nextInt(Math.max(1, ((IMinecoloniesFoodItem) storage.getItem()).getTier() + 2 - homeBuildingLevel)) <= 0)
                             {
                                 bestScore = localScore;
                                 bestStorage = storage;

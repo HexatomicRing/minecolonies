@@ -1,6 +1,5 @@
 package com.minecolonies.core.colony;
 
-import com.google.common.collect.EvictingQueue;
 import com.minecolonies.api.IMinecoloniesAPI;
 import com.minecolonies.api.MinecoloniesAPIProxy;
 import com.minecolonies.api.colony.CitizenNameFile;
@@ -19,9 +18,9 @@ import com.minecolonies.api.entity.citizen.AbstractCivilianEntity;
 import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
 import com.minecolonies.api.entity.citizen.Skill;
 import com.minecolonies.api.entity.citizen.VisibleCitizenStatus;
+import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenFoodHandler;
 import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenSkillHandler;
 import com.minecolonies.api.inventory.InventoryCitizen;
-import com.minecolonies.api.items.IMinecoloniesFoodItem;
 import com.minecolonies.api.quests.IQuestDeliveryObjective;
 import com.minecolonies.api.quests.IQuestInstance;
 import com.minecolonies.api.quests.IQuestManager;
@@ -35,13 +34,13 @@ import com.minecolonies.core.colony.interactionhandling.QuestDialogueInteraction
 import com.minecolonies.core.colony.interactionhandling.ServerCitizenInteraction;
 import com.minecolonies.core.colony.interactionhandling.StandardInteraction;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
+import com.minecolonies.core.entity.citizen.citizenhandlers.CitizenFoodHandler;
 import com.minecolonies.core.entity.citizen.citizenhandlers.CitizenHappinessHandler;
 import com.minecolonies.core.entity.citizen.citizenhandlers.CitizenMournHandler;
 import com.minecolonies.core.entity.citizen.citizenhandlers.CitizenSkillHandler;
 import com.minecolonies.core.network.messages.client.colony.ColonyViewCitizenViewMessage;
 import com.minecolonies.core.util.AttributeModifierUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -53,9 +52,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -224,6 +221,11 @@ public class CitizenData implements ICitizenData
     private final CitizenSkillHandler citizenSkillHandler;
 
     /**
+     * The citizen skill handler.
+     */
+    private final ICitizenFoodHandler citizenFoodHandler;
+
+    /**
      * The citizen chat options on the server side.
      */
     protected final Map<Component, IInteractionResponseHandler> citizenChatOptions = new HashMap<>();
@@ -334,11 +336,6 @@ public class CitizenData implements ICitizenData
     private UUID textureUUID;
 
     /**
-     * Collection of last food items a citizen has eaten.
-     */
-    private EvictingQueue<Item> lastEatenFoods = EvictingQueue.create(10);
-
-    /**
      * Create a CitizenData given an ID. Used as a super-constructor or during loading.
      *
      * @param id     ID of the Citizen.
@@ -352,6 +349,7 @@ public class CitizenData implements ICitizenData
         this.citizenHappinessHandler = new CitizenHappinessHandler(this);
         this.citizenMournHandler = new CitizenMournHandler(this);
         this.citizenSkillHandler = new CitizenSkillHandler();
+        this.citizenFoodHandler = new CitizenFoodHandler(this);
     }
 
     @Override
@@ -1172,6 +1170,12 @@ public class CitizenData implements ICitizenData
     }
 
     @Override
+    public ICitizenFoodHandler getCitizenFoodHandler()
+    {
+        return citizenFoodHandler;
+    }
+
+    @Override
     public void scheduleRestart(final ServerPlayer player)
     {
         originPlayerRestart = player;
@@ -1253,6 +1257,7 @@ public class CitizenData implements ICitizenData
 
         citizenHappinessHandler.write(nbtTagCompound, true);
         citizenMournHandler.write(nbtTagCompound);
+        citizenFoodHandler.write(nbtTagCompound);
 
         inventory.write(nbtTagCompound);
         nbtTagCompound.putInt(TAG_HELD_ITEM_SLOT, inventory.getHeldItemSlot(InteractionHand.MAIN_HAND));
@@ -1325,13 +1330,6 @@ public class CitizenData implements ICitizenData
         {
             nbtTagCompound.putUUID(TAG_TEXTURE_UUID, textureUUID);
         }
-
-        @NotNull final ListTag lastEatenFoodsNBT = new ListTag();
-        for (final Item foodItem : lastEatenFoods)
-        {
-            lastEatenFoodsNBT.add(StringTag.valueOf(BuiltInRegistries.ITEM.getKey(foodItem).toString()));
-        }
-        nbtTagCompound.put(TAG_LAST_FOODS, lastEatenFoodsNBT);
         return nbtTagCompound;
     }
 
@@ -1424,6 +1422,7 @@ public class CitizenData implements ICitizenData
 
         this.citizenHappinessHandler.read(nbtTagCompound, true);
         this.citizenMournHandler.read(nbtTagCompound);
+        this.citizenFoodHandler.read(nbtTagCompound);
 
         if (nbtTagCompound.contains(TAG_LEVEL_MAP) && !nbtTagCompound.contains(TAG_NEW_SKILLS))
         {
@@ -1491,16 +1490,6 @@ public class CitizenData implements ICitizenData
         for (int i = 0; i < finPartQuestsNbt.size(); i++)
         {
             finishedQuestParticipation.add(new ResourceLocation(finPartQuestsNbt.getString(i)));
-        }
-
-        @NotNull final ListTag lastFoodNbt = nbtTagCompound.getList(TAG_LAST_FOODS, TAG_STRING);
-        for (int i = 0; i < lastFoodNbt.size(); i++)
-        {
-            final Item lastFood = BuiltInRegistries.ITEM.get(new ResourceLocation(lastFoodNbt.getString(i)));
-            if (lastFood != Items.AIR)
-            {
-                lastEatenFoods.add(lastFood);
-            }
         }
 
         if (nbtTagCompound.contains(TAG_TEXTURE_UUID))
@@ -2009,63 +1998,6 @@ public class CitizenData implements ICitizenData
         return textureUUID;
     }
 
-    @Override
-    public void addLastEaten(final Item item)
-    {
-        lastEatenFoods.add(item);
-        markDirty(TICKS_SECOND);
-        if (lastEatenFoods.size() >= 10)
-        {
-            this.triggerInteraction(new StandardInteraction(Component.translatable(NO + FOOD_DIVERSITY), ChatPriority.IMPORTANT));
-            this.triggerInteraction(new StandardInteraction(Component.translatable(NO + FOOD_DIVERSITY), ChatPriority.IMPORTANT));
-            this.triggerInteraction(new StandardInteraction(Component.translatable(NO + FOOD_QUALITY + URGENT), ChatPriority.BLOCKING));
-            this.triggerInteraction(new StandardInteraction(Component.translatable(NO + FOOD_QUALITY + URGENT), ChatPriority.BLOCKING));
-        }
-    }
-
-    @Override
-    public Item getLastEaten()
-    {
-        return lastEatenFoods.peek();
-    }
-
-    @Override
-    public int checkLastEaten(final Item item)
-    {
-        int index = -1;
-        for (final Item foodItem : lastEatenFoods)
-        {
-            if (foodItem == item)
-            {
-                return index;
-            }
-            index++;
-        }
-        return -1;
-    }
-
-    @Override
-    public CitizenFoodStats getFoodHappinessStats()
-    {
-        int qualityFoodCounter = 0;
-        Set<Item> uniqueFoods = new HashSet<>();
-        for (final Item foodItem : lastEatenFoods)
-        {
-            if (foodItem instanceof IMinecoloniesFoodItem)
-            {
-                qualityFoodCounter++;
-            }
-            uniqueFoods.add(foodItem);
-        }
-        return new CitizenFoodStats(qualityFoodCounter, uniqueFoods.size());
-    }
-
-    @Override
-    public Queue<Item> getLastEatenQueue()
-    {
-        return lastEatenFoods;
-    }
-
     @Nullable
     public BlockPos getHomePosition()
     {
@@ -2090,5 +2022,11 @@ public class CitizenData implements ICitizenData
         }
 
         return null;
+    }
+
+    @Override
+    public double getDiseaseModifier()
+    {
+        return citizenFoodHandler.getDiseaseModifier(getJob() == null ? 1 : getJob().getDiseaseModifier());
     }
 }

@@ -1,14 +1,12 @@
 package com.minecolonies.apiimp.initializer;
 
-import com.google.common.collect.ImmutableList;
-import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.colony.IColony;
 import com.minecolonies.api.colony.IColonyManager;
 import com.minecolonies.api.colony.buildings.IBuilding;
-import com.minecolonies.api.colony.buildings.ModBuildings;
 import com.minecolonies.api.colony.interactionhandling.InteractionValidatorRegistry;
 import com.minecolonies.api.colony.requestsystem.request.RequestUtils;
 import com.minecolonies.api.crafting.ItemStorage;
+import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenFoodHandler;
 import com.minecolonies.api.entity.citizen.happiness.ITimeBasedHappinessModifier;
 import com.minecolonies.api.items.ModTags;
 import com.minecolonies.api.util.InventoryUtils;
@@ -266,7 +264,7 @@ public class InteractionValidatorInitializer
 
         InteractionValidatorRegistry.registerStandardPredicate(Component.translatable(NO + FOOD_QUALITY + URGENT),
           citizen -> {
-            if (citizen.getHomeBuilding() == null || citizen.getLastEatenQueue().size() < 10)
+            if (citizen.getHomeBuilding() == null || citizen.getCitizenFoodHandler().getLastEatenQueue().size() < 10)
             {
                 return false;
             }
@@ -275,12 +273,12 @@ public class InteractionValidatorInitializer
             {
                 return false;
             }
-            return citizen.getFoodHappinessStats().quality() < (homeBuildingLevel-2)-1;
+            return citizen.getCitizenFoodHandler().getFoodHappinessStats().quality() < (homeBuildingLevel-2)-1;
           });
 
         InteractionValidatorRegistry.registerStandardPredicate(Component.translatable(NO + FOOD_DIVERSITY + URGENT),
           citizen -> {
-              if (citizen.getHomeBuilding() == null || citizen.getLastEatenQueue().size() < 10)
+              if (citizen.getHomeBuilding() == null || citizen.getCitizenFoodHandler().getLastEatenQueue().size() < 10)
               {
                   return false;
               }
@@ -289,12 +287,12 @@ public class InteractionValidatorInitializer
               {
                   return false;
               }
-              return citizen.getFoodHappinessStats().diversity() < homeBuildingLevel/2.0;
+              return citizen.getCitizenFoodHandler().getFoodHappinessStats().diversity() < homeBuildingLevel/2.0;
           });
 
         InteractionValidatorRegistry.registerStandardPredicate(Component.translatable(NO + FOOD_QUALITY),
           citizen -> {
-              if (citizen.getHomeBuilding() == null || citizen.getLastEatenQueue().size() < 10)
+              if (citizen.getHomeBuilding() == null || citizen.getCitizenFoodHandler().getLastEatenQueue().size() < 10)
               {
                   return false;
               }
@@ -303,13 +301,13 @@ public class InteractionValidatorInitializer
               {
                   return false;
               }
-              final ICitizenData.CitizenFoodStats happinessStats = citizen.getFoodHappinessStats();
+              final ICitizenFoodHandler.CitizenFoodStats happinessStats = citizen.getCitizenFoodHandler().getFoodHappinessStats();
               return happinessStats.quality() < (homeBuildingLevel-2) && happinessStats.quality() >= (homeBuildingLevel-2-1);
           });
 
         InteractionValidatorRegistry.registerStandardPredicate(Component.translatable(NO + FOOD_DIVERSITY),
           citizen -> {
-              if (citizen.getHomeBuilding() == null || citizen.getLastEatenQueue().size() < 10)
+              if (citizen.getHomeBuilding() == null || citizen.getCitizenFoodHandler().getLastEatenQueue().size() < 10)
               {
                   return false;
               }
@@ -318,7 +316,7 @@ public class InteractionValidatorInitializer
               {
                   return false;
               }
-              final ICitizenData.CitizenFoodStats happinessStats = citizen.getFoodHappinessStats();
+              final ICitizenFoodHandler.CitizenFoodStats happinessStats = citizen.getCitizenFoodHandler().getFoodHappinessStats();
               return happinessStats.diversity() < homeBuildingLevel && happinessStats.diversity() >= homeBuildingLevel/2.0;
           });
 

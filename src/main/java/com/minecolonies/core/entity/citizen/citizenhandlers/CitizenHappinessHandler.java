@@ -4,6 +4,7 @@ import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.colony.IColony;
 import com.minecolonies.api.colony.interactionhandling.ChatPriority;
 import com.minecolonies.api.colony.interactionhandling.InteractionValidatorRegistry;
+import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenFoodHandler;
 import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenHappinessHandler;
 import com.minecolonies.api.entity.citizen.happiness.*;
 import com.minecolonies.api.util.Tuple;
@@ -282,12 +283,13 @@ public class CitizenHappinessHandler implements ICitizenHappinessHandler
     public static double getFoodFactor(final ICitizenData citizenData)
     {
         final int homeBuildingLevel = citizenData.getHomeBuilding() == null ? 0 : citizenData.getHomeBuilding().getBuildingLevel();
-        if (homeBuildingLevel == 0 || citizenData.getLastEatenQueue().isEmpty())
+        final ICitizenFoodHandler foodHandler = citizenData.getCitizenFoodHandler();
+        if (homeBuildingLevel == 0 || foodHandler.getLastEatenQueue().isEmpty())
         {
             return 1.0;
         }
 
-        ICitizenData.CitizenFoodStats happinessStats = citizenData.getFoodHappinessStats();
+        ICitizenFoodHandler.CitizenFoodStats happinessStats = foodHandler.getFoodHappinessStats();
 
         final double diversityFactor = Math.min(5.0, (double) happinessStats.diversity() / homeBuildingLevel);
         final double qualityFactor = Math.min(5.0, (double) happinessStats.quality() / (Math.max(1.0, homeBuildingLevel - 2.0)));

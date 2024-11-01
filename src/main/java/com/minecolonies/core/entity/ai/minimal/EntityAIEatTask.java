@@ -10,8 +10,8 @@ import com.minecolonies.api.entity.ai.IStateAI;
 import com.minecolonies.api.entity.ai.statemachine.states.CitizenAIState;
 import com.minecolonies.api.entity.ai.statemachine.states.IState;
 import com.minecolonies.api.entity.ai.statemachine.tickratestatemachine.TickingTransition;
+import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenFoodHandler;
 import com.minecolonies.api.util.*;
-import com.minecolonies.api.util.constant.CitizenConstants;
 import com.minecolonies.core.Network;
 import com.minecolonies.core.colony.buildings.workerbuildings.BuildingCook;
 import com.minecolonies.core.colony.interactionhandling.StandardInteraction;
@@ -221,9 +221,10 @@ public class EntityAIEatTask implements IStateAI
             return EAT;
         }
 
+        final ICitizenFoodHandler foodHandler = citizenData.getCitizenFoodHandler();
         if (eatenFood.isEmpty())
         {
-            citizenData.addLastEaten(foodStack.getItem());
+            foodHandler.addLastEaten(foodStack.getItem());
         }
         eatenFood.add(foodStack.getItem());
 
@@ -238,9 +239,9 @@ public class EntityAIEatTask implements IStateAI
 
         for (final Item foodItem : eatenFood)
         {
-            if (citizenData.getLastEaten() != foodItem)
+            if (foodHandler.getLastEaten() != foodItem)
             {
-                citizenData.addLastEaten(foodItem);
+                foodHandler.addLastEaten(foodItem);
             }
         }
         eatenFood.clear();

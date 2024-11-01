@@ -4,6 +4,7 @@ import com.minecolonies.api.colony.buildings.IBuilding;
 import com.minecolonies.api.colony.jobs.IJob;
 import com.minecolonies.api.entity.citizen.AbstractEntityCitizen;
 import com.minecolonies.api.entity.citizen.VisibleCitizenStatus;
+import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenFoodHandler;
 import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenHappinessHandler;
 import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenMournHandler;
 import com.minecolonies.api.entity.citizen.citizenhandlers.ICitizenSkillHandler;
@@ -14,7 +15,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -431,47 +431,22 @@ public interface ICitizenData extends ICivilianData, IQuestGiver, IQuestParticip
     boolean hasQuestAssignment();
 
     /**
-     * Add last eaten food item.
-     * @param item the last eaten food item.
-     */
-    void addLastEaten(Item item);
-
-    /**
-     * Get the last eaten food item.
-     * @return the last eaten item.
-     */
-    Item getLastEaten();
-
-    /**
-     * Check when we last ate a given food item.
-     * -1 if not eaten recently.
-     * @param item the food item we last ate.
-     * @return the index in the list or -1 for not recently or oldest food in queue
-     */
-    int checkLastEaten(Item item);
-
-    /**
-     * Get the food happiness stats
-     */
-    CitizenFoodStats getFoodHappinessStats();
-
-    /**
-     * Food happiness stats.
-     * @param diversity number of diverse foods eaten.
-     * @param quality number of quality foods eaten.
-     */
-    record CitizenFoodStats(int diversity, int quality) {}
-
-    /**
-     * Get access to the full queue.
-     * @return the full last eaten queue.
-     */
-    Queue<Item> getLastEatenQueue();
-
-    /**
      * Get the home position of the citizen.
      * @return the pos to go home to.
      */
     @Nullable
     BlockPos getHomePosition();
+
+    /**
+     * Personal citizen disease modifier.
+     * @return the disease modifier.
+     */
+    double getDiseaseModifier();
+
+    /**
+     * The Handler for the citizens food.
+     *
+     * @return the instance of the handler
+     */
+    ICitizenFoodHandler getCitizenFoodHandler();
 }
