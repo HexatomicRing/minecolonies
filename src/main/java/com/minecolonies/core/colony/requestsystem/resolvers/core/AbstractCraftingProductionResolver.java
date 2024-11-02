@@ -175,7 +175,7 @@ public abstract class AbstractCraftingProductionResolver<C extends AbstractCraft
                 {
                     if(InventoryUtils.getItemCountInProvider(building, item -> ItemStackUtils.compareItemStacksIgnoreStackSize(item, craftingHelperStack, false, true)) <= ingredient.getAmount())
                     {
-                        int requiredForDurability = (int) Math.ceil((double) count / ingredient.getRemainingDurablityValue());
+                        int requiredForDurability = craftingHelperStack.isDamageableItem() ? (int) Math.ceil((double) count / ingredient.getRemainingDurablityValue()) : 1;
                         materialRequests.add(createNewRequestForStack(manager, craftingHelperStack, requiredForDurability , requiredForDurability, false));
                     }
                 }
