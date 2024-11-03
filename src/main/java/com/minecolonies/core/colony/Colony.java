@@ -80,6 +80,7 @@ import static com.minecolonies.api.util.constant.Constants.TICKS_SECOND;
 import static com.minecolonies.api.util.constant.NbtTagConstants.*;
 import static com.minecolonies.api.util.constant.TranslationConstants.*;
 import static com.minecolonies.core.MineColonies.getConfig;
+import static com.minecolonies.core.util.TeamUtils.checkOrCreateTeam;
 
 /**
  * This class describes a colony and contains all the data and methods for manipulating a Colony.
@@ -362,7 +363,7 @@ public class Colony implements IColony
         {
             this.dimensionId = world.dimension();
             onWorldLoad(world);
-            checkOrCreateTeam();
+            checkOrCreateTeam(world, getTeamName(), false);
         }
         this.permissions = new Permissions(this);
         researchManager = new ResearchManager(this);
@@ -627,23 +628,11 @@ public class Colony implements IColony
     }
 
     @Override
+    @Nullable
     public PlayerTeam getTeam()
     {
         // This getter will create the team if it doesn't exist. Could do something different though in the future.
-        return checkOrCreateTeam();
-    }
-
-    /**
-     * Check or create the team.
-     */
-    private PlayerTeam checkOrCreateTeam()
-    {
-        if (this.world.getScoreboard().getPlayerTeam(getTeamName()) == null)
-        {
-            this.world.getScoreboard().addPlayerTeam(getTeamName());
-            this.world.getScoreboard().getPlayerTeam(getTeamName()).setAllowFriendlyFire(false);
-        }
-        return this.world.getScoreboard().getPlayerTeam(getTeamName());
+        return checkOrCreateTeam(world, getTeamName(), false);
     }
 
     /**
@@ -655,10 +644,13 @@ public class Colony implements IColony
     {
         if (this.world != null)
         {
-            checkOrCreateTeam();
             this.colonyTeamColor = colonyColor;
-            this.world.getScoreboard().getPlayerTeam(getTeamName()).setColor(colonyColor);
-            this.world.getScoreboard().getPlayerTeam(getTeamName()).setPlayerPrefix(Component.literal(colonyColor.toString()));
+            final PlayerTeam team = getTeam();
+            if (team != null)
+            {
+                team.setColor(colonyColor);
+                team.setPlayerPrefix(Component.literal(colonyColor.toString()));
+            }
         }
         this.markDirty();
     }
@@ -1829,7 +1821,7 @@ public class Colony implements IColony
             {
                 checkChunkAndRegisterTicket(chunkPos, chunk);
             }
-            else
+            else if (buildingManager.keepChunkColonyLoaded(chunk))
             {
                 this.pendingChunks.add(chunkPos);
             }
@@ -1891,8 +1883,8 @@ public class Colony implements IColony
     public String getTextureStyleId()
     {
         if (MineColonies.getConfig().getServer().holidayFeatures.get() &&
-              (LocalDateTime.now().getDayOfMonth() >= 29 && LocalDateTime.now().getMonth() == Month.OCTOBER)
-                 || (LocalDateTime.now().getDayOfMonth() <= 2 && LocalDateTime.now().getMonth() == Month.NOVEMBER))
+              ((LocalDateTime.now().getDayOfMonth() >= 29 && LocalDateTime.now().getMonth() == Month.OCTOBER)
+                 || (LocalDateTime.now().getDayOfMonth() <= 2 && LocalDateTime.now().getMonth() == Month.NOVEMBER)))
         {
             return "nether";
         }

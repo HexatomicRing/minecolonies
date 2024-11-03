@@ -1997,7 +1997,6 @@ public class CitizenData implements ICitizenData
     {
         return textureUUID;
     }
-
     @Nullable
     public BlockPos getHomePosition()
     {
