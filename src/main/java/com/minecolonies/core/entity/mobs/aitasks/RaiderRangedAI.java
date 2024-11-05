@@ -1,18 +1,18 @@
 package com.minecolonies.core.entity.mobs.aitasks;
 
-import com.minecolonies.api.entity.mobs.ICustomAttackSound;
+import com.minecolonies.api.entity.ai.combat.threat.IThreatTableEntity;
 import com.minecolonies.api.entity.ai.statemachine.states.IState;
 import com.minecolonies.api.entity.ai.statemachine.tickratestatemachine.ITickRateStateMachine;
-import com.minecolonies.api.entity.ai.combat.threat.IThreatTableEntity;
 import com.minecolonies.api.entity.mobs.AbstractEntityRaiderMob;
+import com.minecolonies.api.entity.mobs.ICustomAttackSound;
 import com.minecolonies.api.entity.mobs.IRangedMobEntity;
-import com.minecolonies.core.entity.pathfinding.pathresults.PathResult;
 import com.minecolonies.api.util.EntityUtils;
 import com.minecolonies.core.MineColonies;
-import com.minecolonies.core.entity.other.CustomArrowEntity;
 import com.minecolonies.core.entity.ai.combat.AttackMoveAI;
 import com.minecolonies.core.entity.ai.combat.CombatUtils;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
+import com.minecolonies.core.entity.other.CustomArrowEntity;
+import com.minecolonies.core.entity.pathfinding.pathresults.PathResult;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -153,7 +153,7 @@ public class RaiderRangedAI<T extends AbstractEntityRaiderMob & IThreatTableEnti
         {
             return 10;
         }
-
+// TODO: config is included in own difficulty
         return (int) (Math.max(MIN_ATTACK_DELAY, MAX_ATTACK_DELAY - MineColonies.getConfig().getServer().raidDifficulty.get() * 4 * user.getDifficulty())
                         * user.getAttackDelayModifier());
     }

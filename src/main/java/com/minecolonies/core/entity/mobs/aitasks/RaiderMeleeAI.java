@@ -1,16 +1,15 @@
 package com.minecolonies.core.entity.mobs.aitasks;
 
+import com.minecolonies.api.entity.ai.combat.threat.IThreatTableEntity;
 import com.minecolonies.api.entity.ai.statemachine.states.IState;
 import com.minecolonies.api.entity.ai.statemachine.tickratestatemachine.ITickRateStateMachine;
-import com.minecolonies.api.entity.ai.combat.threat.IThreatTableEntity;
 import com.minecolonies.api.entity.mobs.AbstractEntityRaiderMob;
-import com.minecolonies.api.util.DamageSourceKeys;
-import com.minecolonies.core.entity.pathfinding.pathresults.PathResult;
 import com.minecolonies.api.util.SoundUtils;
 import com.minecolonies.api.util.constant.Constants;
 import com.minecolonies.core.MineColonies;
 import com.minecolonies.core.entity.ai.combat.AttackMoveAI;
 import com.minecolonies.core.entity.citizen.EntityCitizen;
+import com.minecolonies.core.entity.pathfinding.pathresults.PathResult;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceKey;
@@ -79,6 +78,7 @@ public class RaiderMeleeAI<T extends AbstractEntityRaiderMob & IThreatTableEntit
     @Override
     protected int getAttackDelay()
     {
+        // TODO: use own difficulty
         return MAX_ATTACK_DELAY - MineColonies.getConfig().getServer().raidDifficulty.get() * 4;
     }
 
