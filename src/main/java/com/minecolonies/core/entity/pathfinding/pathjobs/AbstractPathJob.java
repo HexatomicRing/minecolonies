@@ -923,14 +923,14 @@ public abstract class AbstractPathJob implements Callable<Path>, IPathJob
         if (!isDiving)
         {
             boolean correctlyOnStairs = false;
-            if(Math.abs(dY) == 1 && below.getBlock() instanceof StairBlock && below.getValue(StairBlock.HALF) == Half.BOTTOM)
+            if (Math.abs(dY) == 1 && below.getBlock() instanceof StairBlock && below.getValue(StairBlock.HALF) == Half.BOTTOM)
             {
                 Direction facing = below.getValue(StairBlock.FACING);
                 StairsShape shape = below.getValue(StairBlock.SHAPE);
-                if(dX == dY) correctlyOnStairs = facing == Direction.EAST || (facing == Direction.NORTH && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.SOUTH && shape == StairsShape.OUTER_LEFT);
-                else if(dX != 0) correctlyOnStairs = facing == Direction.WEST || (facing == Direction.SOUTH && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.NORTH && shape == StairsShape.OUTER_LEFT);
-                else if(dZ == dY) correctlyOnStairs = facing == Direction.SOUTH || (facing == Direction.EAST && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.WEST && shape == StairsShape.OUTER_LEFT);
-                else if(dZ != 0) correctlyOnStairs = facing == Direction.NORTH || (facing == Direction.WEST && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.EAST && shape == StairsShape.OUTER_LEFT);
+                if (dX == dY) correctlyOnStairs = facing == Direction.EAST || (facing == Direction.NORTH && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.SOUTH && shape == StairsShape.OUTER_LEFT);
+                else if (dX != 0) correctlyOnStairs = facing == Direction.WEST || (facing == Direction.SOUTH && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.NORTH && shape == StairsShape.OUTER_LEFT);
+                else if (dZ == dY) correctlyOnStairs = facing == Direction.SOUTH || (facing == Direction.EAST && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.WEST && shape == StairsShape.OUTER_LEFT);
+                else if (dZ != 0) correctlyOnStairs = facing == Direction.NORTH || (facing == Direction.WEST && shape == StairsShape.OUTER_RIGHT) || (facing == Direction.EAST && shape == StairsShape.OUTER_LEFT);
             }
             if (dY != 0 && !(ladder && parent.isLadder()) && !correctlyOnStairs)
             {
@@ -942,10 +942,11 @@ public abstract class AbstractPathJob implements Callable<Path>, IPathJob
                 //{
                 //    cost += pathingOptions.dropCost * Math.abs(dY * dY * dY);
                 //}
-                if(dY < -3.375 && pathingOptions.dropDamage != 0)
+                if (dY < -3.375 && pathingOptions.dropDamage != 0)
                 {
                     //Avoid falling damage.
-                    if(!PathfindingUtils.isWater(world, null, below, null)){
+                    if (!PathfindingUtils.isWater(world, null, below, null))
+                    {
                         cost += pathingOptions.dropDamage * (-dY - 3.375);
                     }
                 }
@@ -997,13 +998,13 @@ public abstract class AbstractPathJob implements Callable<Path>, IPathJob
             Direction facing = state.getValue(DoorBlock.FACING);
             boolean targetState = (facing == Direction.EAST || facing == Direction.WEST);
             boolean controlled = last.getBlock() instanceof BasePressurePlateBlock;
-            if(dZ != 0) targetState = !targetState;
-            if(controlled)
+            if (dZ != 0) targetState = !targetState;
+            if (controlled)
             {
-                if(targetState) cost += pathingOptions.openDoorCost;
+                if (targetState) cost += pathingOptions.openDoorCost;
                 else cost += 100; //This is a trap!!!
             }
-            else if(open != targetState)
+            else if (open != targetState)
             {
                 cost += pathingOptions.openDoorCost;
             }
