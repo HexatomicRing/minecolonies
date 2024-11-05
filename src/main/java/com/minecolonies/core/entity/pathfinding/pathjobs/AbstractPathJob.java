@@ -983,13 +983,22 @@ public abstract class AbstractPathJob implements Callable<Path>, IPathJob
                 cost += pathingOptions.divingCost;
             }
         }
-        //todo door facing and some other cases should be considered later
-        if (
-                (state.getBlock() instanceof DoorBlock && !state.getValue(DoorBlock.OPEN)) ||
-                (state.getBlock() instanceof FenceGateBlock && !state.getValue(FenceGateBlock.OPEN))
-        )
+        if (state.getBlock() instanceof DoorBlock)
         {
-            cost += pathingOptions.openDoorCost;
+            boolean open = state.getValue(DoorBlock.OPEN);
+            Direction facing = state.getValue(DoorBlock.FACING);
+            boolean targetState = (facing == Direction.EAST || facing == Direction.WEST);
+            boolean controlled = last.getBlock() instanceof BasePressurePlateBlock;
+            if(dZ != 0) targetState = !targetState;
+            if(controlled)
+            {
+                if(targetState) cost += pathingOptions.openDoorCost;
+                else cost += 1000; //This is a trap!!!
+            }
+            else if(open != targetState)
+            {
+                cost += pathingOptions.openDoorCost;
+            }
         }
         return cost;
     }

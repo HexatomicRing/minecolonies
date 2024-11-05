@@ -15,7 +15,7 @@ public class PathingOptions
     /**
      * Additional cost of jumping
      */
-    public double jumpCost = 3D;
+    public double jumpCost = 2D;
 
     /**
      * Additional cost of dropping
@@ -25,17 +25,17 @@ public class PathingOptions
     /**
      * Cost improvement of paths - base 1.
      */
-    public double onPathCost = 0.8d;
+    public double onPathCost = 1 / 4d;
 
     /**
      * Cost improvement of paths - base 1.
      */
-    public double onRailCost = 0.5d;
+    public double onRailCost = 1 / 10d;
 
     /**
      * The rails exit cost.
      */
-    public double openDoorCost = 3d;
+    public double openDoorCost = 4;
 
     /**
      * The rails exit cost.
@@ -45,7 +45,7 @@ public class PathingOptions
     /**
      * Additional cost of swimming - base 1.
      */
-    public double swimCost = 6D;
+    public double swimCost = 2D;
 
     /**
      * Additional cost of cave air.
