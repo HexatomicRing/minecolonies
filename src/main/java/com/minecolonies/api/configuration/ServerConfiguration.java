@@ -97,7 +97,6 @@ public class ServerConfiguration extends AbstractConfiguration
 
     public final BooleanValue                        enableColonyProtection;
     public final EnumValue<Explosions>               turnOffExplosionsInColonies;
-    public final ConfigValue<List<? extends String>> freeToInteractBlocks;
 
     /*  -------------------------------------------------------------------------------- *
      *  ------------------- ######## Compatibility Settings ######## ------------------- *
@@ -201,7 +200,6 @@ public class ServerConfiguration extends AbstractConfiguration
 
         enableColonyProtection = defineBoolean("enablecolonyprotection", true);
         turnOffExplosionsInColonies = defineEnum("turnoffexplosionsincolonies", Explosions.DAMAGE_ENTITIES);
-        freeToInteractBlocks = defineList("freetointeractblocks", () -> "block ID or position (x y z)", stringValidator, "dirt", "0 0 0");
 
         swapToCategory("compatibility");
 

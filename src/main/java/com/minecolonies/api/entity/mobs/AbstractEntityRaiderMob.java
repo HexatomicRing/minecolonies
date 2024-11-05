@@ -49,17 +49,13 @@ import static com.minecolonies.api.entity.mobs.RaiderMobUtils.MOB_ATTACK_DAMAGE;
 import static com.minecolonies.api.util.constant.ColonyManagerConstants.NO_COLONY_ID;
 import static com.minecolonies.api.util.constant.NbtTagConstants.*;
 import static com.minecolonies.api.util.constant.RaiderConstants.*;
+import static com.minecolonies.core.util.TeamUtils.checkOrCreateTeam;
 
 /**
  * Abstract for all raider entities.
  */
 public abstract class AbstractEntityRaiderMob extends AbstractFastMinecoloniesEntity implements IThreatTableEntity, Enemy
 {
-    /**
-     * Difficulty at which raiders team up
-     */
-    private static final double TEAM_DIFFICULTY = 2.0d;
-
     /**
      * The percent of life taken per damage modifier
      */
@@ -523,14 +519,14 @@ public abstract class AbstractEntityRaiderMob extends AbstractFastMinecoloniesEn
       final ServerLevelAccessor worldIn,
       final DifficultyInstance difficultyIn,
       final MobSpawnType reason,
-      @Nullable final SpawnGroupData p_21437_)
+      @Nullable final SpawnGroupData spawnDataIn)
     {
         RaiderMobUtils.setEquipment(this);
-        return super.finalizeSpawn(worldIn, difficultyIn, reason, p_21437_);
+        return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
     }
 
     @Override
-    public void remove(RemovalReason reason)
+    public void remove(@NotNull final RemovalReason reason)
     {
         if (!level().isClientSide && colony != null && eventID > 0)
         {
@@ -725,38 +721,15 @@ public abstract class AbstractEntityRaiderMob extends AbstractFastMinecoloniesEn
             this.setEnvDamageImmunity(true);
         }
 
-        if (difficulty >= TEAM_DIFFICULTY)
-        {
-            level().getScoreboard().addPlayerToTeam(getScoreboardName(), checkOrCreateTeam());
-        }
-
         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(baseHealth);
         this.setHealth(this.getMaxHealth());
     }
 
-    /**
-     * Creates or gets the scoreboard team
-     *
-     * @return Scoreboard team
-     */
-    private PlayerTeam checkOrCreateTeam()
+    @Override
+    @Nullable
+    protected PlayerTeam getAssignedTeam()
     {
-        if (this.level().getScoreboard().getPlayerTeam(getTeamName()) == null)
-        {
-            this.level().getScoreboard().addPlayerTeam(getTeamName());
-            this.level().getScoreboard().getPlayerTeam(getTeamName()).setAllowFriendlyFire(false);
-        }
-        return this.level().getScoreboard().getPlayerTeam(getTeamName());
-    }
-
-    /**
-     * Gets the scoreboard team name
-     *
-     * @return
-     */
-    protected String getTeamName()
-    {
-        return RAID_TEAM;
+        return checkOrCreateTeam(level(), RAID_TEAM);
     }
 
     /**

@@ -88,7 +88,7 @@ public class PathJobFindWater extends AbstractPathJob
                 }
             }
 
-            final PathJobFindFishingPos job = new PathJobFindFishingPos(world, new BlockPos(n.x, n.y, n.z), hutLocation, 10, entity);
+            final PathJobFindFishingPos job = new PathJobFindFishingPos(getActualWorld(), world, new BlockPos(n.x, n.y, n.z), hutLocation, 10, entity);
             job.setPathingOptions(getPathingOptions());
             final Path path = job.search();
             if (path != null && path.canReach())
@@ -125,13 +125,14 @@ public class PathJobFindWater extends AbstractPathJob
         private final int      distance;
 
         public PathJobFindFishingPos(
+          final Level actualWorld,
           final LevelReader world,
           final @NotNull BlockPos start,
           final @NotNull BlockPos direction,
           final int distance,
         final Mob entity)
         {
-            super(world, start, distance + 100, new PathResult(), entity);
+            super(actualWorld, world, start, distance + 100, new PathResult(), null);
             this.direction = direction;
             this.distance = distance;
         }

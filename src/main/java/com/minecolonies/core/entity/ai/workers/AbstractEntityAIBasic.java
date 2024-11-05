@@ -3,6 +3,7 @@ package com.minecolonies.core.entity.ai.workers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
+import com.ldtteam.structurize.util.BlockUtils;
 import com.minecolonies.api.colony.ICitizenData;
 import com.minecolonies.api.colony.buildings.IBuilding;
 import com.minecolonies.api.colony.interactionhandling.ChatPriority;
@@ -11,10 +12,10 @@ import com.minecolonies.api.colony.permissions.IPermissions;
 import com.minecolonies.api.colony.requestsystem.location.ILocation;
 import com.minecolonies.api.colony.requestsystem.request.IRequest;
 import com.minecolonies.api.colony.requestsystem.request.RequestState;
-import com.minecolonies.api.colony.requestsystem.requestable.Tool;
 import com.minecolonies.api.colony.requestsystem.requestable.IDeliverable;
 import com.minecolonies.api.colony.requestsystem.requestable.RequestTag;
 import com.minecolonies.api.colony.requestsystem.requestable.Stack;
+import com.minecolonies.api.colony.requestsystem.requestable.Tool;
 import com.minecolonies.api.colony.requestsystem.resolver.IRequestResolver;
 import com.minecolonies.api.crafting.ItemStorage;
 import com.minecolonies.api.entity.ai.statemachine.AIEventTarget;
@@ -43,11 +44,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -775,9 +776,17 @@ public abstract class AbstractEntityAIBasic<J extends AbstractJob<?, J>, B exten
     protected final boolean walkToBuilding()
     {
         @Nullable final IBuilding ownBuilding = building;
-        //Return true if the building is null to stall the worker
-        return ownBuilding == null
-                 || walkToBlock(ownBuilding.getPosition());
+        if (ownBuilding == null)
+        {
+            return true;
+        }
+        final BlockPos standingPos = ownBuilding.getStandingPosition();
+        int range = 1;
+        if (standingPos.equals(ownBuilding.getPosition()))
+        {
+            range = 3;
+        }
+        return walkToBlock(ownBuilding.getStandingPosition(), range);
     }
 
     /**
@@ -1468,28 +1477,9 @@ public abstract class AbstractEntityAIBasic<J extends AbstractJob<?, J>, B exten
      */
     public BlockPos getWorkingPosition(final int distance, final BlockPos targetPos, final int offset)
     {
-        if (offset > MAX_ADDITIONAL_RANGE_TO_BUILD)
-        {
-            return targetPos;
-        }
-
-        // TODO: Use pathfinding for this instead? Or find around Util
-
-        @NotNull final Direction[] directions = {Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH};
-
-        //then get a solid place with two air spaces above it in any direction.
-        for (final Direction direction : directions)
-        {
-            @NotNull final BlockPos positionInDirection = getPositionInDirection(direction, distance + offset, targetPos);
-            if (EntityUtils.checkForFreeSpace(world, positionInDirection)
-                  && world.getBlockState(positionInDirection.above()).is(BlockTags.SAPLINGS))
-            {
-                return positionInDirection;
-            }
-        }
-
-        //if necessary we call it recursively and add some "offset" to the sides.
-        return getWorkingPosition(distance, targetPos, offset + 1);
+        // TODO: Use pathfinding for this instead! Get rid of all those getWork position stuff
+        final BlockPos workPos = BlockPosUtil.findSpawnPosAround(world, targetPos);
+        return workPos == null ? targetPos : workPos;
     }
 
     /**

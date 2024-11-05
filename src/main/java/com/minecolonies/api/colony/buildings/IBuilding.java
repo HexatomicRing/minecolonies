@@ -513,4 +513,10 @@ public interface IBuilding extends IBuildingContainer, IModuleContainer<IBuildin
         getColony().writeToItemStack(stack);
         new BuildingId(getID()).writeToItemStack(stack);
     }
+
+    /**
+     * Get the standing position for a building.
+     * @return the standing pos.
+     */
+    BlockPos getStandingPosition();
 }
