@@ -52,6 +52,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.minecraft.world.scores.PlayerTeam;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -237,6 +238,18 @@ public abstract class AbstractEntityCitizen extends AbstractCivilianEntity imple
     public boolean isNoAi()
     {
         return false;
+    }
+
+    @Override
+    @Nullable
+    protected PlayerTeam getAssignedTeam()
+    {
+        final ICitizenColonyHandler citizenColonyHandler = getCitizenColonyHandler();
+        if (citizenColonyHandler == null)
+        {
+            return null;
+        }
+        return citizenColonyHandler.getTeam(level());
     }
 
     /**

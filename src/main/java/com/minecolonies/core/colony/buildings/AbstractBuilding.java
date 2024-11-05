@@ -7,6 +7,7 @@ import com.google.common.reflect.TypeToken;
 import com.ldtteam.structurize.api.RotationMirror;
 import com.ldtteam.structurize.blueprints.v1.Blueprint;
 import com.ldtteam.structurize.storage.StructurePacks;
+import com.ldtteam.structurize.util.BlockUtils;
 import com.minecolonies.api.MinecoloniesAPIProxy;
 import com.minecolonies.api.blocks.AbstractBlockHut;
 import com.minecolonies.api.colony.ICitizenData;
@@ -61,12 +62,14 @@ import com.minecolonies.core.util.ChunkDataHelper;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -107,6 +110,11 @@ public abstract class AbstractBuilding extends AbstractBuildingContainer
     public static final ISettingKey<BoolSetting> BREEDING = new SettingKey<>(BoolSetting.class, new ResourceLocation(MOD_ID, "breeding"));
 
     public static final ISettingKey<BoolSetting> USE_SHEARS = new SettingKey<>(BoolSetting.class, new ResourceLocation(Constants.MOD_ID, "useshears"));
+
+    /**
+     * Best possible standing pos score.
+     */
+    private static final int BEST_STANDING_SCORE = 10;
 
     /**
      * The data store id for request system related data.
@@ -153,6 +161,11 @@ public abstract class AbstractBuilding extends AbstractBuildingContainer
      * Day the next pickup should happen.
      */
     public int pickUpDay = -1;
+
+    /**
+     * Cached position for citizen standing position next to hut block.
+     */
+    private BlockPos cachedStandingPosition;
 
     /**
      * Constructor for a AbstractBuilding.
@@ -995,6 +1008,7 @@ public abstract class AbstractBuilding extends AbstractBuildingContainer
         getModulesByType(IBuildingEventsModule.class).forEach(module -> module.onUpgradeComplete(newLevel));
         colony.getResearchManager().checkAutoStartResearch();
         colony.getBuildingManager().onBuildingUpgradeComplete(this, newLevel);
+        cachedStandingPosition = null;
     }
 
     @Override
@@ -1048,6 +1062,61 @@ public abstract class AbstractBuilding extends AbstractBuildingContainer
     public void resetGuardBuildingNear()
     {
         this.recheckGuardBuildingNear = true;
+    }
+
+    @Override
+    public BlockPos getStandingPosition()
+    {
+        if (cachedStandingPosition == null)
+        {
+            if (!WorldUtil.isEntityBlockLoaded(colony.getWorld(), getPosition()))
+            {
+                return getPosition();
+            }
+
+            BlockPos bestPos = getPosition();
+            int bestScore = 0;
+
+            //Return true if the building is null to stall the worker
+            for (final Direction dir : Direction.Plane.HORIZONTAL)
+            {
+                final BlockPos currentPos = getPosition().relative(dir);
+                final BlockState hereState = colony.getWorld().getBlockState(currentPos);
+                // Check air here and air above.
+                if ((!hereState.getBlock().properties().hasCollision || hereState.is(BlockTags.WOOL_CARPETS))
+                      && !colony.getWorld().getBlockState(currentPos.above()).getBlock().properties().hasCollision
+                      && BlockUtils.isAnySolid(colony.getWorld().getBlockState(currentPos.below())))
+                {
+                    int localScore = BEST_STANDING_SCORE;
+                    if (colony.getWorld().canSeeSky(currentPos))
+                    {
+                        // More critical
+                        localScore-=2;
+                    }
+                    if (colony.getWorld().getBlockState(getPosition()).getValue(AbstractBlockHut.FACING) == dir)
+                    {
+                        // Less critical
+                        localScore--;
+                    }
+
+                    if (localScore == BEST_STANDING_SCORE)
+                    {
+                        cachedStandingPosition = currentPos;
+                        return cachedStandingPosition;
+                    }
+
+                    if (localScore > bestScore)
+                    {
+                        bestScore = localScore;
+                        bestPos = currentPos;
+                    }
+                }
+            }
+
+            // prefer default rotation of the building facing this.
+            cachedStandingPosition = bestPos;
+        }
+        return cachedStandingPosition == null ? getPosition() : cachedStandingPosition;
     }
 
     //------------------------- Starting Required Tools/Item handling -------------------------//

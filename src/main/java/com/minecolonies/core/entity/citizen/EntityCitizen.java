@@ -230,11 +230,6 @@ public class EntityCitizen extends AbstractEntityCitizen implements IThreatTable
     private ILocation location = null;
 
     /**
-     * Cached team name the entity belongs to.
-     */
-    private String cachedTeamName;
-
-    /**
      * The current chunkpos.
      */
     private ChunkPos lastChunk;
@@ -244,11 +239,6 @@ public class EntityCitizen extends AbstractEntityCitizen implements IThreatTable
      */
     private final ThreatTable threatTable         = new ThreatTable<>(this);
     private       int         interactionCooldown = 0;
-
-    /**
-     * Cache the entire team object.
-     */
-    private PlayerTeam cachedTeam;
 
     /**
      * The citizen AI
@@ -337,7 +327,6 @@ public class EntityCitizen extends AbstractEntityCitizen implements IThreatTable
                 final IColonyView colonyView = IColonyManager.getInstance().getColonyView(citizenColonyHandler.getColonyId(), level().dimension());
                 if (colonyView != null)
                 {
-                    this.cachedTeamName = colonyView.getTeamName();
                     this.citizenDataView = colonyView.getCitizen(citizenId);
                     if (citizenDataView != null)
                     {
@@ -372,7 +361,7 @@ public class EntityCitizen extends AbstractEntityCitizen implements IThreatTable
         int priority = 0;
         this.goalSelector.addGoal(priority, new EntityAIFloat(this));
         this.goalSelector.addGoal(priority, new EntityAIInteractToggleAble(this, FENCE_TOGGLE, TRAP_TOGGLE, DOOR_TOGGLE));
-        this.goalSelector.addGoal(++priority, new LookAtEntityInteractGoal(this, Player.class, WATCH_CLOSEST2, 1.0F));
+        this.goalSelector.addGoal(++priority, new LookAtEntityInteractGoal(this, Player.class, WATCH_CLOSEST2, 0.2F));
         this.goalSelector.addGoal(++priority, new LookAtEntityInteractGoal(this, EntityCitizen.class, WATCH_CLOSEST2_FAR, WATCH_CLOSEST2_FAR_CHANCE));
         this.goalSelector.addGoal(++priority, new LookAtEntityGoal(this, LivingEntity.class, WATCH_CLOSEST));
     }
@@ -633,6 +622,7 @@ public class EntityCitizen extends AbstractEntityCitizen implements IThreatTable
     }
 
     @Override
+    @NotNull
     public String getScoreboardName()
     {
         return getName().getString() + " (" + getCivilianID() + ")";
@@ -723,6 +713,7 @@ public class EntityCitizen extends AbstractEntityCitizen implements IThreatTable
             if (colonyView != null)
             {
                 this.citizenDataView = colonyView.getCitizen(citizenId);
+                // TODO: Why is this here on clientside?
                 this.getNavigation().getPathingOptions().setCanUseRails(canPathOnRails());
                 this.getNavigation().getPathingOptions().setCanClimbAdvanced(canClimbVines());
             }
@@ -1796,31 +1787,6 @@ public class EntityCitizen extends AbstractEntityCitizen implements IThreatTable
     }
 
     @Override
-    public PlayerTeam getTeam()
-    {
-        if (level() == null || (level().isClientSide && cachedTeamName == null))
-        {
-            return null;
-        }
-
-        if (cachedTeam != null)
-        {
-            return cachedTeam;
-        }
-
-        if (level().isClientSide)
-        {
-            cachedTeam = level().getScoreboard().getPlayerTeam(this.cachedTeamName);
-        }
-        else
-        {
-            cachedTeam = level().getScoreboard().getPlayerTeam(getScoreboardName());
-        }
-
-        return cachedTeam;
-    }
-
-    @Override
     public void setCustomName(@Nullable final Component name)
     {
         if (citizenData != null && citizenColonyHandler.getColony() != null && name != null)
@@ -1848,28 +1814,6 @@ public class EntityCitizen extends AbstractEntityCitizen implements IThreatTable
     public boolean requiresCustomPersistence()
     {
         return true;
-    }
-
-    /**
-     * Returns the home position of each citizen (His house or town hall).
-     *
-     * @return location
-     */
-    @NotNull
-    @Override
-    public BlockPos getRestrictCenter()
-    {
-        @Nullable final IBuilding homeBuilding = citizenColonyHandler.getHomeBuilding();
-        if (homeBuilding != null)
-        {
-            return homeBuilding.getPosition();
-        }
-        else if (citizenColonyHandler.getColony() != null && citizenColonyHandler.getColony().getBuildingManager().getTownHall() != null)
-        {
-            return citizenColonyHandler.getColony().getBuildingManager().getTownHall().getPosition();
-        }
-
-        return super.getRestrictCenter();
     }
 
     @Nullable
